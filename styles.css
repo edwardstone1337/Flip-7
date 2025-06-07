@@ -22,13 +22,13 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color:var(--brand-teal);
     min-height: 100vh;
-    padding: 16px;
+    padding: 12px;
     margin: 0 auto;
 }
 
 .app-container {
     background-color: var(--brand-cream);
-    max-width: 375px;
+    max-width: 400px;
     margin: 0 auto;
     padding: 24px 16px 16px 16px;
     border: 4px solid var(--brand-navy);
@@ -140,16 +140,18 @@ body {
 
 .modifier-row {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(4px, 2vw, 8px);
     margin-bottom: 8px;
+    width: 100%;
 }
 
 .number-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(4px, 2vw, 8px);
     margin-bottom: 24px;
+    width: 100%;
 }
 
 .card {
@@ -165,6 +167,8 @@ body {
     transition: all 0.2s ease;
     font-weight: bold;
     padding: 8px 4px;
+    min-width: 0;
+    width: 100%;
 }
 
 .card:hover {
