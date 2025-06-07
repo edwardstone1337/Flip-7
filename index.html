@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flip 7 Solo Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+    <div class="app-header">
+      <div class="app-title">
+        <img src="flip7logo.png" alt="" />
+      </div>
+    </div>
+
+        <!-- Round Navigation -->
+        <div class="round-navigation">
+            <button class="nav-button" id="prev-round" onclick="goToPreviousRound()">
+              ← Prev
+            </button>
+            <div class="round-indicator" id="round-indicator">Round 1</div>
+            <button class="nav-button" id="next-round" onclick="goToNextRound()">
+              Next →
+            </button>
+          </div>
+
+    <div class="score-display">
+      <div class="banked-score" id="banked-score">0</div>
+      <div class="banked-label">Banked Score</div>
+      <div class="realtime-score" id="realtime-score">0</div>
+      <div class="realtime-label">Real-time Total</div>
+      <div class="score-details" id="score-breakdown">
+        Select cards to calculate score
+      </div>
+      <div class="status-indicators">
+        <div class="flip7-indicator hidden" id="flip7-status">
+          🎯 FLIP 7 BONUS!
+        </div>
+        <div class="bust-indicator hidden" id="bust-status">💥 BUST!</div>
+      </div>
+    </div>
+
+
+
+    <!-- Modifier Cards Row -->
+    <div class="modifier-row">
+      <div class="card modifier" data-type="modifier" data-value="x2">
+        ×2
+        <div class="card-label">Double</div>
+      </div>
+      <div class="card modifier" data-type="modifier" data-value="+2">
+        +2
+        <div class="card-label">Bonus</div>
+      </div>
+      <div class="card modifier" data-type="modifier" data-value="+4">
+        +4
+        <div class="card-label">Bonus</div>
+      </div>
+      <div class="card modifier" data-type="modifier" data-value="+6">
+        +6
+        <div class="card-label">Bonus</div>
+      </div>
+      <div class="card modifier" data-type="modifier" data-value="+8">
+        +8
+        <div class="card-label">Bonus</div>
+      </div>
+      <div class="card modifier" data-type="modifier" data-value="+10">
+        +10
+        <div class="card-label">Bonus</div>
+      </div>
+    </div>
+
+    <!-- Number Cards Grid -->
+    <div class="number-grid">
+      <div class="card number" data-type="number" data-value="0">
+        0
+        <div class="card-label">Zero</div>
+      </div>
+      <div class="card number" data-type="number" data-value="1">
+        1
+        <div class="card-label">One</div>
+      </div>
+      <div class="card number" data-type="number" data-value="2">
+        2
+        <div class="card-label">Two</div>
+      </div>
+      <div class="card number" data-type="number" data-value="3">
+        3
+        <div class="card-label">Three</div>
+      </div>
+      <div class="card number" data-type="number" data-value="4">
+        4
+        <div class="card-label">Four</div>
+      </div>
+      <div class="card number" data-type="number" data-value="5">
+        5
+        <div class="card-label">Five</div>
+      </div>
+      <div class="card number" data-type="number" data-value="6">
+        6
+        <div class="card-label">Six</div>
+      </div>
+      <div class="card number" data-type="number" data-value="7">
+        7
+        <div class="card-label">Seven</div>
+      </div>
+      <div class="card number" data-type="number" data-value="8">
+        8
+        <div class="card-label">Eight</div>
+      </div>
+      <div class="card number" data-type="number" data-value="9">
+        9
+        <div class="card-label">Nine</div>
+      </div>
+      <div class="card action bust" onclick="bustRound()">
+        X
+        <div class="card-label">Bust</div>
+      </div>
+      <div class="card number" data-type="number" data-value="10">
+        10
+        <div class="card-label">Ten</div>
+      </div>
+      <div class="card number" data-type="number" data-value="11">
+        11
+        <div class="card-label">Eleven</div>
+      </div>
+      <div class="card number" data-type="number" data-value="12">
+        12
+        <div class="card-label">Twelve</div>
+      </div>
+      <div class="card action primary" id="bank-button" onclick="bankRound()">
+        ✓
+        <div class="card-label">Bank</div>
+      </div>
+    </div>
+
+    <!-- Rounds History -->
+    <div class="rounds-section">
+      <div class="rounds-header">
+        <div class="rounds-title">All Rounds</div>
+        <div class="total-score">Total: <span id="total-score">0</span></div>
+      </div>
+      <div id="rounds-list">
+        <div class="round-item current" onclick="goToRound(1)">
+          <div class="round-info">
+            <div class="round-number">Round 1</div>
+            <div class="round-cards">Not played yet</div>
+          </div>
+          <div class="round-score">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restart Game Button -->
+    <div class="restart-container">
+        <button class="restart-button" onclick="confirmRestart()">
+            Restart Game
+        </button>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div id="celebration-modal" class="celebration hidden">
+      <div class="celebration-content">
+        <div class="celebration-emoji">🎉</div>
+        <div class="celebration-text">You hit 200 points!</div>
+        <button
+          onclick="closeCelebration()"
+          style="
+            padding: 12px 24px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+          "
+        >
+          Awesome!
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="celebration hidden">
+        <div class="celebration-content">
+            <div class="celebration-emoji">⚠️</div>
+            <div class="celebration-text" id="error-message"></div>
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button onclick="closeError()" style="padding: 12px 24px; background: var(--brand-navy); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    Cancel
+                </button>
+                <button onclick="bankAndCloseError()" style="padding: 12px 24px; background: var(--brand-teal); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    Bank it
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+  </body>
+</html>
