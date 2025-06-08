@@ -9,7 +9,7 @@
     --brand-red: #e53e3e;
     --brand-red-hover: #c53030;
     --font-display: 'Bebas Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Overpass', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
@@ -19,7 +19,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body);
     background-color:var(--brand-teal);
     min-height: 100vh;
     padding: 12px;
@@ -50,35 +50,40 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
 }
 
 .nav-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: black;
+    border: 1px solid var(--brand-navy);
+    color: var(--brand-navy);
     border-radius: 8px;
     padding: 8px 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: bold;
+    background-color: var(--brand-cream);
 }
 
 .nav-button:hover {
-    background: rgba(255, 255, 255, 0.3);
+    /* background: rgba(255, 255, 255, 0.3); */
 }
 
 .nav-button:disabled {
-    opacity: 0.5;
+    opacity: 0;
     cursor: not-allowed;
 }
 
 .round-indicator {
     color: var(--brand-navy);
-    font-size: 18px;
+    font-family: overpass;
+    text-transform: uppercase;
+    font-size: 24px;
     font-weight: bold;
     min-width: 100px;
     text-align: center;
+    font-style: normal;
+font-weight: 800;
+line-height: 100%; /* 32px */
 }
 
 .score-display {
@@ -89,7 +94,8 @@ body {
 }
 
 .banked-score {
-    font-size: 64px;
+    font-size: 160px;
+    height: 160px;
     font-weight: bold;
     color: var(--brand-navy);
     margin-bottom: 8px;
@@ -99,7 +105,7 @@ body {
 .banked-label {
     font-size: 14px;
     color: #718096;
-    margin-bottom: 16px;
+    margin-bottom: 0px;
 }
 
 .realtime-score {
@@ -150,10 +156,11 @@ body {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: clamp(4px, 2vw, 8px);
-    margin-bottom: 24px;
+    margin-bottom: 0px;
     width: 100%;
 }
 
+/* Base card styles */
 .card {
     aspect-ratio: 3/4;
     border: 1px solid var(--brand-navy);
@@ -176,33 +183,56 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Card label styles */
+.card-label {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    color: var(--brand-navy);
+}
+
+/* Selected state */
 .card.selected {
-    background: var(--brand-teal);
-    border: var(--brand-navy);
+    background: var(--brand-navy);
     transform: translateY(-4px);
     box-shadow: 0 6px 16px rgba(66, 153, 225, 0.4);
+}
+
+.card.selected .card-label {
     color: var(--brand-cream);
 }
 
-.card.modifier {
+/* Number card styles */
+.card.number {
+    font-size: 40px;
+    font-family: var(--font-display);
     color: var(--brand-navy);
+}
+
+.card.number.selected {
+    color: var(--brand-cream);
+}
+
+/* Modifier card styles */
+.card.modifier {
     font-size: 28px;
     font-family: var(--font-display);
+    color: var(--brand-navy);
 }
 
 .card.modifier.selected {
     background: var(--brand-orange-light);
     color: var(--brand-navy);
     border: var(--brand-orange);
-    font-family: var(--font-display);
 }
 
-.card.number {
-    font-size: 40px;
+.card.modifier.selected .card-label {
     color: var(--brand-navy);
-    font-family: var(--font-display);
 }
 
+/* Action card styles */
 .card.action {
     background: #edf2f7;
     color: #4a5568;
@@ -211,20 +241,22 @@ body {
 }
 
 .card.action.primary {
-    background: #2B3276;
+    background: var(--brand-teal);
     font-size: 40px;
     font-family: var(--font-display);
-    color: white;
+    border: none;
+    color:var(--brand-cream);
 }
 
 .card.action.primary:hover {
-    background: #3182ce;
+    background: var(--brand-teal);
 }
 
 .card.action.bust {
     background: var(--brand-red);
-    color: white;
+    color:var(--brand-cream);
     font-family: var(--font-display);
+    border: none;
     font-size: 40px;
 }
 
@@ -232,12 +264,8 @@ body {
     background: #c53030;
 }
 
-.card-label {
-    font-size: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 4px;
-    font-family: var(--font-body);
+.card.action .card-label {
+    color: var(--brand-cream);
 }
 
 .rounds-section {
@@ -318,7 +346,7 @@ body {
     color: #4299e1;
 }
 
-.celebration {
+.celebration, .error-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -338,18 +366,57 @@ body {
     border-radius: 24px;
     text-align: center;
     animation: bounceIn 0.6s ease;
+    max-width: 90%;
+    width: 400px;
 }
 
 .celebration-text {
     font-size: 24px;
     font-weight: bold;
-    color: #2d3748;
+    color: var(--brand-navy);
     margin-bottom: 16px;
+    font-family: var(--font-body);
 }
 
 .celebration-emoji {
     font-size: 48px;
     margin-bottom: 24px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: center;
+}
+
+.modal-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.modal-button.primary {
+    background: var(--brand-teal);
+    color: white;
+}
+
+.modal-button.primary:hover {
+    background: var(--brand-navy);
+}
+
+.modal-button.secondary {
+    background: var(--brand-navy);
+    color: white;
+}
+
+.modal-button.secondary:hover {
+    background: var(--brand-navy-light);
 }
 
 @keyframes fadeIn {
@@ -369,7 +436,7 @@ body {
 }
 
 .restart-container {
-    margin-top: 24px;
+    margin-top: 8px;
     text-align: center;
     width: 100%;
 }
@@ -389,5 +456,5 @@ body {
 
 .restart-button:hover {
     background: var(--brand-red);
-    color: white;
+    color: var(--brand-cream);
 }

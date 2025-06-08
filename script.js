@@ -42,7 +42,7 @@
                     .length;
                 
                 if (numberCards >= 7) {
-                    showError("You've already flipped 7 unique number cards! 🎉 Time to bank your round and claim your Flip 7 bonus!");
+                    showError("You've already flipped 7 unique number cards! Time to bank your round and claim your Flip 7 bonus!");
                     return;
                 }
             }
@@ -68,6 +68,7 @@
             const numberCards = [];
             const modifiers = [];
             let hasX2 = false;
+            let hasDuplicates = false;
 
             // Parse selected cards
             selectedCards.forEach(cardId => {
@@ -82,6 +83,19 @@
                     }
                 }
             });
+
+            // Check for duplicate number cards
+            const uniqueNumbers = new Set(numberCards);
+            hasDuplicates = uniqueNumbers.size !== numberCards.length;
+
+            // If there are duplicates, return 0 score
+            if (hasDuplicates) {
+                return {
+                    score: 0,
+                    breakdown: 'Duplicate number cards - BUST!',
+                    isFlip7: false
+                };
+            }
 
             // Calculate base score from number cards
             let numberScore = numberCards.reduce((sum, num) => sum + num, 0);
@@ -105,13 +119,18 @@
             let breakdown = '';
             if (numberCards.length > 0) {
                 breakdown += `Numbers: ${numberCards.join('+')} = ${numberCards.reduce((sum, num) => sum + num, 0)}`;
-                if (hasX2) breakdown += ' ×2 = ' + (numberCards.reduce((sum, num) => sum + num, 0) * 2);
+                if (hasX2) {
+                    breakdown += ' ×2';
+                }
             }
             if (isFlip7) {
                 breakdown += (breakdown ? ' + ' : '') + 'Flip 7 Bonus: +15';
             }
             if (modifierBonus > 0) {
                 breakdown += (breakdown ? ' + ' : '') + `Modifiers: +${modifierBonus}`;
+            }
+            if (hasX2 && numberCards.length === 0) {
+                breakdown += '×2 Multiplier';
             }
             if (!breakdown) breakdown = 'No cards selected';
 
@@ -245,7 +264,7 @@
             const result = calculateScore(round.selectedCards);
             
             if (round.selectedCards.size === 0) {
-                alert('Please select some cards before banking the round!');
+                showError("Please select some cards before banking the round!");
                 return;
             }
 
@@ -265,7 +284,7 @@
 
             // Auto-advance to next round only if this is a new round
             if (currentRound === rounds.length) {
-                goToNextRound();
+                    goToNextRound();
             }
         }
 
@@ -273,7 +292,7 @@
             const round = getCurrentRoundData();
             
             if (round.selectedCards.size === 0) {
-                alert('Please select some cards before busting the round!');
+                showError("Please select some cards before busting the round!");
                 return;
             }
 
@@ -293,7 +312,7 @@
 
             // Auto-advance to next round only if this is a new round
             if (currentRound === rounds.length) {
-                goToNextRound();
+                    goToNextRound();
             }
         }
 
@@ -322,13 +341,16 @@
             `).join('');
         }
 
-        function confirmRestart() {
-            if (confirm('Are you sure you want to restart the game? This will clear all rounds and scores.')) {
-                restartGame();
-            }
+        function showRestartConfirmation() {
+            document.getElementById('restart-modal').classList.remove('hidden');
+        }
+
+        function closeRestartConfirmation() {
+            document.getElementById('restart-modal').classList.add('hidden');
         }
 
         function restartGame() {
+            closeRestartConfirmation();
             rounds = [{
                 round: 1,
                 cards: [],
@@ -371,3 +393,34 @@
             closeError();
             bankRound();
         }
+
+        // Test function to verify warning scenarios
+        function testWarningScenarios() {
+            console.log("Testing warning scenarios...");
+            
+            // 1. Test Empty Hand Warning
+            console.log("\n1. Testing Empty Hand Warning:");
+            console.log("Click Bank or Bust without selecting any cards");
+            
+            // 2. Test 7-Card Limit Warning
+            console.log("\n2. Testing 7-Card Limit Warning:");
+            console.log("Select these number cards in order: 1,2,3,4,5,6,7");
+            console.log("Then try to select an 8th number card");
+            
+            // 3. Test Duplicate Number Cards Warning
+            console.log("\n3. Testing Duplicate Number Cards Warning:");
+            console.log("Select number card '4'");
+            console.log("Select number card '4' again");
+            
+            // 4. Test 200 Points Celebration
+            console.log("\n4. Testing 200 Points Celebration:");
+            console.log("To reach 200 points quickly:");
+            console.log("1. Select cards: 7,8,9,10,11,12,13 (total 70)");
+            console.log("2. Select ×2 modifier (doubles to 140)");
+            console.log("3. Select +10 modifier (adds 10)");
+            console.log("4. Bank the round (total 150)");
+            console.log("5. Repeat with different numbers to reach 200");
+        }
+
+        // Add test function to window for easy access
+        window.testWarningScenarios = testWarningScenarios;
