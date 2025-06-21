@@ -24,17 +24,21 @@ body {
   font-family: var(--font-body);
   background-color: var(--brand-teal);
   min-height: 100vh;
-  padding: 12px;
   margin: 0 auto;
+  padding-top: 80px;
 }
 
 .app-container {
   background-color: var(--brand-cream);
   max-width: 400px;
-  margin: 0 auto;
-  padding: 24px 16px 16px 16px;
+  margin: 16px auto;
+  padding: 16px;
   border: 4px solid var(--brand-navy);
   border-radius: 16px;
+}
+
+.app-container-wrapper {
+  padding: 16px;
 }
 
 .app-header {
@@ -42,9 +46,38 @@ body {
   margin-bottom: 24px;
 }
 
-.app-title img {
-  max-height: 64px;
-  margin-bottom: 8px;
+.app-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.title-main {
+  color: var(--brand-navy);
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.title-sub {
+  color: var(--brand-navy);
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.app-subtitle {
+  color: var(--brand-navy);
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .round-navigation {
@@ -478,14 +511,78 @@ body {
 
 /* Top Navigation Styles */
 .top-nav {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  background-color: var(--brand-cream);
+  width: 100%;
+  padding: 8px 0;
+  position: fixed;
+  top: 0;
+  z-index: 100;
 }
 
 .nav-container {
   display: flex;
-  justify-content: center;
-  gap: 32px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+}
+
+.nav-logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.nav-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.nav-title-main {
+  color: var(--brand-navy);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav-title-sub {
+  color: var(--brand-navy);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav-logo {
+  max-height: 40px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+}
+
+/* Desktop layout - center navigation buttons */
+@media (min-width: 768px) {
+  .nav-container {
+    justify-content: flex-start;
+  }
+  
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 .nav-link {
@@ -497,15 +594,18 @@ body {
   border-radius: 8px;
   transition: all 0.2s ease;
   font-family: var(--font-body);
+  border: 2px solid transparent;
 }
 
 .nav-link:hover {
   background-color: var(--brand-navy-light);
+  border-color: var(--brand-navy);
 }
 
 .nav-link.active {
   background-color: var(--brand-navy);
   color: var(--brand-cream);
+  border-color: var(--brand-navy);
 }
 
 /* FAQ Page Styles */
@@ -567,10 +667,13 @@ body {
 
 /* Footer Styles */
 .site-footer {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 2px solid var(--brand-navy-light);
+  background-color: var(--brand-navy);
+  margin: 16px auto;
+  max-width: 400px;
+  padding: 24px 16px;
+  border-radius: 16px;
   text-align: center;
+  border: 2px solid var(--brand-navy);
 }
 
 .footer-nav {
@@ -578,7 +681,7 @@ body {
 }
 
 .footer-link {
-  color: var(--brand-navy);
+  color: var(--brand-cream);
   text-decoration: none;
   font-weight: 600;
   font-size: 14px;
@@ -587,14 +690,16 @@ body {
   border-radius: 6px;
   transition: all 0.2s ease;
   font-family: var(--font-body);
+  border: 1px solid transparent;
 }
 
 .footer-link:hover {
-  background-color: var(--brand-navy-light);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--brand-cream);
 }
 
 .footer-description {
-  color: var(--brand-navy);
+  color: var(--brand-cream);
   font-size: 14px;
   margin-bottom: 16px;
   font-family: var(--font-body);
@@ -602,10 +707,11 @@ body {
 }
 
 .footer-disclaimer {
-  color: #718096;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 12px;
   line-height: 1.4;
   font-family: var(--font-body);
+  margin-bottom: 16px;
 }
 
 .footer-disclaimer p {
@@ -613,13 +719,14 @@ body {
 }
 
 .footer-disclaimer a {
-  color: var(--brand-teal);
+  color: var(--brand-orange-light);
   text-decoration: none;
   font-weight: 600;
 }
 
 .footer-disclaimer a:hover {
   text-decoration: underline;
+  color: var(--brand-orange);
 }
 
 /* Coffee Button Styles */
