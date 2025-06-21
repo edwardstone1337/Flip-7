@@ -622,6 +622,31 @@ body {
   text-decoration: underline;
 }
 
+/* Coffee Button Styles */
+.coffee-button-container {
+  margin-top: 16px;
+  text-align: center;
+  width: 100%;
+}
+
+.coffee-button-container a {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+}
+
+.coffee-button-container img {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.coffee-button-container img:hover {
+  transform: scale(1.02);
+}
+
 /* FAQ Page Specific Styles */
 .intro-text {
   background-color: var(--brand-navy-light);
