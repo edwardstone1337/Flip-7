@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.flip7tracker.com/sitemap.xml
+Sitemap: https://www.flip7scorecard.com/sitemap.xml
