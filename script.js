@@ -315,11 +315,6 @@
             const round = getCurrentRoundData();
             const result = calculateScore(round.selectedCards);
             
-            if (round.selectedCards.size === 0) {
-                showError("Please select some cards before banking the round!");
-                return;
-            }
-
             // Update round data
             round.cards = Array.from(round.selectedCards).map(cardId => {
                 const [type, value] = cardId.split('-');
@@ -344,11 +339,6 @@
         function bustRound() {
             const round = getCurrentRoundData();
             
-            if (round.selectedCards.size === 0) {
-                showError("Please select some cards before busting the round!");
-                return;
-            }
-
             // Update round data
             round.cards = Array.from(round.selectedCards).map(cardId => {
                 const [type, value] = cardId.split('-');
@@ -454,28 +444,28 @@
         function testWarningScenarios() {
             console.log("Testing warning scenarios...");
             
-            // 1. Test Empty Hand Warning
-            console.log("\n1. Testing Empty Hand Warning:");
-            console.log("Click Bank or Bust without selecting any cards");
-            
-            // 2. Test 7-Card Limit Warning
-            console.log("\n2. Testing 7-Card Limit Warning:");
+            // 1. Test 7-Card Limit Warning
+            console.log("\n1. Testing 7-Card Limit Warning:");
             console.log("Select these number cards in order: 1,2,3,4,5,6,7");
             console.log("Then try to select an 8th number card");
             
-            // 3. Test Duplicate Number Cards Warning
-            console.log("\n3. Testing Duplicate Number Cards Warning:");
+            // 2. Test Duplicate Number Cards Warning
+            console.log("\n2. Testing Duplicate Number Cards Warning:");
             console.log("Select number card '4'");
             console.log("Select number card '4' again");
             
-            // 4. Test 200 Points Celebration
-            console.log("\n4. Testing 200 Points Celebration:");
+            // 3. Test 200 Points Celebration
+            console.log("\n3. Testing 200 Points Celebration:");
             console.log("To reach 200 points quickly:");
             console.log("1. Select cards: 7,8,9,10,11,12,13 (total 70)");
             console.log("2. Select ×2 modifier (doubles to 140)");
             console.log("3. Select +10 modifier (adds 10)");
             console.log("4. Bank the round (total 150)");
             console.log("5. Repeat with different numbers to reach 200");
+            
+            // 4. Test Empty Hand Banking/Busting
+            console.log("\n4. Testing Empty Hand Banking/Busting:");
+            console.log("You can now bank or bust with no cards selected (realistic game behavior)");
         }
 
         // Add test function to window for easy access
