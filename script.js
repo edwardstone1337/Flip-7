@@ -13,11 +13,59 @@
         let currentRound = 1;
         let celebrationShown = false;
 
+        // State persistence functions
+        function saveGameState() {
+            const gameState = {
+                rounds: rounds.map(round => ({
+                    ...round,
+                    selectedCards: Array.from(round.selectedCards) // Convert Set to Array for storage
+                })),
+                currentRound: currentRound,
+                celebrationShown: celebrationShown
+            };
+            localStorage.setItem('flip7GameState', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const savedState = localStorage.getItem('flip7GameState');
+            if (savedState) {
+                try {
+                    const gameState = JSON.parse(savedState);
+                    rounds = gameState.rounds.map(round => ({
+                        ...round,
+                        selectedCards: new Set(round.selectedCards) // Convert Array back to Set
+                    }));
+                    currentRound = gameState.currentRound;
+                    celebrationShown = gameState.celebrationShown || false;
+                    return true;
+                } catch (error) {
+                    console.error('Error loading game state:', error);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function clearGameState() {
+            localStorage.removeItem('flip7GameState');
+        }
+
+        // Save state before navigating away
+        window.addEventListener('beforeunload', saveGameState);
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            // Try to load saved state, fall back to default if none exists
+            const stateLoaded = loadGameState();
+            
             initializeCards();
             updateDisplay();
             updateRoundsDisplay();
+            
+            // If state was loaded, apply visual selections
+            if (stateLoaded) {
+                loadRoundSelection();
+            }
         });
 
         function initializeCards() {
@@ -58,6 +106,7 @@
             }
 
             updateDisplay();
+            saveGameState(); // Save state after card selection changes
         }
 
         function getCurrentRoundData() {
@@ -201,6 +250,7 @@
                 loadRoundSelection();
                 updateDisplay();
                 updateRoundsDisplay();
+                saveGameState(); // Save state after navigation
             }
         }
 
@@ -226,6 +276,7 @@
                 loadRoundSelection();
                 updateDisplay();
                 updateRoundsDisplay();
+                saveGameState(); // Save state after navigation
             }
         }
 
@@ -235,6 +286,7 @@
             loadRoundSelection();
             updateDisplay();
             updateRoundsDisplay();
+            saveGameState(); // Save state after navigation
         }
 
         function saveCurrentSelection() {
@@ -281,6 +333,7 @@
             // Update displays
             updateDisplay();
             updateRoundsDisplay();
+            saveGameState(); // Save state after banking
 
             // Auto-advance to next round only if this is a new round
             if (currentRound === rounds.length) {
@@ -309,6 +362,7 @@
             // Update displays
             updateDisplay();
             updateRoundsDisplay();
+            saveGameState(); // Save state after busting
 
             // Auto-advance to next round only if this is a new round
             if (currentRound === rounds.length) {
@@ -370,10 +424,12 @@
             
             updateDisplay();
             updateRoundsDisplay();
+            clearGameState(); // Clear saved state when restarting
         }
 
         function showCelebration() {
             document.getElementById('celebration-modal').classList.remove('hidden');
+            saveGameState(); // Save state when celebration is shown
         }
 
         function closeCelebration() {

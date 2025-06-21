@@ -458,3 +458,123 @@ line-height: 100%; /* 32px */
     background: var(--brand-red);
     color: var(--brand-cream);
 }
+
+/* Top Navigation Styles */
+.top-nav {
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--brand-navy);
+    padding-bottom: 16px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+}
+
+.nav-link {
+    color: var(--brand-navy);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+}
+
+.nav-link:hover {
+    background-color: var(--brand-navy-light);
+}
+
+.nav-link.active {
+    background-color: var(--brand-navy);
+    color: var(--brand-cream);
+}
+
+/* FAQ Page Styles */
+.faq-content {
+    max-width: 100%;
+}
+
+.faq-section {
+    text-align: left;
+}
+
+.faq-section h1 {
+    color: var(--brand-navy);
+    font-family: var(--font-display);
+    font-size: 32px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.faq-section h2 {
+    color: var(--brand-navy);
+    font-family: var(--font-display);
+    font-size: 24px;
+    margin: 32px 0 16px 0;
+    padding-top: 16px;
+    border-top: 2px solid var(--brand-navy-light);
+}
+
+.faq-section h3 {
+    color: var(--brand-navy);
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-weight: bold;
+    margin: 24px 0 12px 0;
+}
+
+.faq-section p {
+    color: var(--brand-navy);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.faq-section ul {
+    color: var(--brand-navy);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.faq-section li {
+    margin-bottom: 8px;
+}
+
+.faq-section strong {
+    font-weight: bold;
+    color: var(--brand-navy);
+}
+
+/* Responsive design for FAQ page */
+@media (max-width: 480px) {
+    .faq-section h1 {
+        font-size: 28px;
+    }
+    
+    .faq-section h2 {
+        font-size: 20px;
+    }
+    
+    .faq-section h3 {
+        font-size: 16px;
+    }
+    
+    .faq-section p,
+    .faq-section ul {
+        font-size: 14px;
+    }
+    
+    .nav-container {
+        gap: 16px;
+    }
+    
+    .nav-link {
+        font-size: 16px;
+        padding: 6px 12px;
+    }
+}
