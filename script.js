@@ -449,6 +449,10 @@
             document.getElementById('share-modal').classList.add('hidden');
         }
 
+        // Ensure these functions are available globally
+        window.showShareModal = showShareModal;
+        window.closeShareModal = closeShareModal;
+
         // Test function to verify warning scenarios
         function testWarningScenarios() {
             console.log("Testing warning scenarios...");
