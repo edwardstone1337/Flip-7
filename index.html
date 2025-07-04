@@ -16,6 +16,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png" />
     
     <!-- Hotjar Tracking Code for Flip 7 Scorecard -->
     <script>
@@ -40,8 +41,9 @@
           </div>
         </a>
         <div class="nav-links">
-          <a href="index.html" class="nav-link active">Scorecard</a>
+          <a href="index.html" class="nav-link active">Play</a>
           <a href="faq.html" class="nav-link">FAQ</a>
+          <button class="nav-link share-button" onclick="showShareModal()">Share</button>
         </div>
       </div>
     </nav>
@@ -248,12 +250,28 @@
           </div>
         </div>
       </div>
+
+      <!-- Share QR Code Modal -->
+      <div id="share-modal" class="celebration hidden">
+        <div class="celebration-content">
+          <div class="celebration-emoji">📱</div>
+          <div class="celebration-text">Scan to share</div>
+          <div class="qr-code-container">
+            <img src="flip7-qr.png" alt="Flip 7 Scorecard QR code" style="width:200px;max-width:100%;height:auto;display:block;margin:0 auto;" />
+          </div>
+          <div class="modal-buttons">
+            <button onclick="closeShareModal()" class="modal-button primary">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Footer -->
     <footer class="site-footer">
       <div class="footer-nav">
-        <a href="index.html" class="footer-link">Scorecard</a>
+        <a href="index.html" class="footer-link">Play</a>
         <a href="faq.html" class="footer-link">FAQ & Rules</a>
       </div>
       

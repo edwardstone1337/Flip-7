@@ -440,6 +440,15 @@
             bankRound();
         }
 
+        // Share modal functions
+        function showShareModal() {
+            document.getElementById('share-modal').classList.remove('hidden');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.add('hidden');
+        }
+
         // Test function to verify warning scenarios
         function testWarningScenarios() {
             console.log("Testing warning scenarios...");
