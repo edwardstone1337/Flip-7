@@ -13,6 +13,10 @@
         let currentRound = 1;
         let celebrationShown = false;
 
+        // Navbar scroll functionality
+        let lastScrollTop = 0;
+        let navbar = null;
+
         // State persistence functions
         function saveGameState() {
             const gameState = {
@@ -55,6 +59,9 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize navbar scroll functionality
+            initializeNavbarScroll();
+            
             // Try to load saved state, fall back to default if none exists
             const stateLoaded = loadGameState();
             
@@ -67,6 +74,44 @@
                 loadRoundSelection();
             }
         });
+
+        function initializeNavbarScroll() {
+            navbar = document.querySelector('.top-nav');
+            if (!navbar) return;
+
+            let scrollTimeout;
+            
+            window.addEventListener('scroll', function() {
+                clearTimeout(scrollTimeout);
+                
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const isScrollingDown = scrollTop > lastScrollTop;
+                const isAtTop = scrollTop <= 0;
+                
+                // Always show navbar at the top
+                if (isAtTop) {
+                    navbar.classList.remove('nav-hidden');
+                    navbar.classList.remove('nav-visible');
+                } else if (isScrollingDown && scrollTop > 100) {
+                    // Hide navbar when scrolling down (after 100px)
+                    navbar.classList.add('nav-hidden');
+                    navbar.classList.remove('nav-visible');
+                } else if (!isScrollingDown && scrollTop > 100) {
+                    // Show navbar when scrolling up (after 100px)
+                    navbar.classList.remove('nav-hidden');
+                    navbar.classList.add('nav-visible');
+                }
+                
+                lastScrollTop = scrollTop;
+                
+                // Add a small delay to prevent flickering
+                scrollTimeout = setTimeout(() => {
+                    if (scrollTop > 100 && !isScrollingDown) {
+                        navbar.classList.add('nav-visible');
+                    }
+                }, 50);
+            });
+        }
 
         function initializeCards() {
             const cards = document.querySelectorAll('.card[data-type]');

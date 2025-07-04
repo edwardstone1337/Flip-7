@@ -450,8 +450,53 @@
   </div> 
 
     <script>
+      // Navbar scroll functionality
+      let lastScrollTop = 0;
+      let navbar = null;
+
+      function initializeNavbarScroll() {
+        navbar = document.querySelector('.top-nav');
+        if (!navbar) return;
+
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', function() {
+          clearTimeout(scrollTimeout);
+          
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const isScrollingDown = scrollTop > lastScrollTop;
+          const isAtTop = scrollTop <= 0;
+          
+          // Always show navbar at the top
+          if (isAtTop) {
+            navbar.classList.remove('nav-hidden');
+            navbar.classList.remove('nav-visible');
+          } else if (isScrollingDown && scrollTop > 100) {
+            // Hide navbar when scrolling down (after 100px)
+            navbar.classList.add('nav-hidden');
+            navbar.classList.remove('nav-visible');
+          } else if (!isScrollingDown && scrollTop > 100) {
+            // Show navbar when scrolling up (after 100px)
+            navbar.classList.remove('nav-hidden');
+            navbar.classList.add('nav-visible');
+          }
+          
+          lastScrollTop = scrollTop;
+          
+          // Add a small delay to prevent flickering
+          scrollTimeout = setTimeout(() => {
+            if (scrollTop > 100 && !isScrollingDown) {
+              navbar.classList.add('nav-visible');
+            }
+          }, 50);
+        });
+      }
+
       // Accordion functionality
       document.addEventListener('DOMContentLoaded', function() {
+        // Initialize navbar scroll functionality
+        initializeNavbarScroll();
+        
         const accordionHeaders = document.querySelectorAll('.accordion-header');
         
         accordionHeaders.forEach(header => {
