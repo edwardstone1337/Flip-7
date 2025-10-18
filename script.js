@@ -1,17 +1,27 @@
-        // Game state
-        let rounds = [
-            {
-                round: 1,
-                cards: [],
-                selectedCards: new Set(),
-                score: 0,
-                flip7: false,
-                busted: false,
-                saved: false
-            }
-        ];
-        let currentRound = 1;
-        let celebrationShown = false;
+        // Game state - Multiplayer structure
+        let gameState = {
+            players: [
+                {
+                    id: 'p1',
+                    name: 'Player 1',
+                    rounds: [
+                        {
+                            round: 1,
+                            cards: [],
+                            selectedCards: new Set(),
+                            score: 0,
+                            flip7: false,
+                            busted: false,
+                            saved: false
+                        }
+                    ],
+                    currentRound: 1,
+                    celebrationShown: false
+                }
+            ],
+            activePlayerId: 'p1',
+            version: 2
+        };
 
         // Navbar scroll functionality
         let lastScrollTop = 0;
@@ -19,28 +29,59 @@
 
         // State persistence functions
         function saveGameState() {
-            const gameState = {
-                rounds: rounds.map(round => ({
-                    ...round,
-                    selectedCards: Array.from(round.selectedCards) // Convert Set to Array for storage
+            const stateToSave = {
+                players: gameState.players.map(player => ({
+                    ...player,
+                    rounds: player.rounds.map(round => ({
+                        ...round,
+                        selectedCards: Array.from(round.selectedCards) // Convert Set to Array for storage
+                    }))
                 })),
-                currentRound: currentRound,
-                celebrationShown: celebrationShown
+                activePlayerId: gameState.activePlayerId,
+                version: 2
             };
-            localStorage.setItem('flip7GameState', JSON.stringify(gameState));
+            localStorage.setItem('flip7GameState', JSON.stringify(stateToSave));
         }
 
         function loadGameState() {
             const savedState = localStorage.getItem('flip7GameState');
             if (savedState) {
                 try {
-                    const gameState = JSON.parse(savedState);
-                    rounds = gameState.rounds.map(round => ({
-                        ...round,
-                        selectedCards: new Set(round.selectedCards) // Convert Array back to Set
-                    }));
-                    currentRound = gameState.currentRound;
-                    celebrationShown = gameState.celebrationShown || false;
+                    const loadedState = JSON.parse(savedState);
+                    
+                    // Check if this is v1 (single-player) format
+                    if (!loadedState.version || loadedState.version === 1) {
+                        // Migrate v1 to v2
+                        gameState = {
+                            players: [
+                                {
+                                    id: 'p1',
+                                    name: 'Player 1',
+                                    rounds: loadedState.rounds.map(round => ({
+                                        ...round,
+                                        selectedCards: new Set(round.selectedCards)
+                                    })),
+                                    currentRound: loadedState.currentRound,
+                                    celebrationShown: loadedState.celebrationShown || false
+                                }
+                            ],
+                            activePlayerId: 'p1',
+                            version: 2
+                        };
+                    } else {
+                        // Load v2 format
+                        gameState = {
+                            players: loadedState.players.map(player => ({
+                                ...player,
+                                rounds: player.rounds.map(round => ({
+                                    ...round,
+                                    selectedCards: new Set(round.selectedCards)
+                                }))
+                            })),
+                            activePlayerId: loadedState.activePlayerId,
+                            version: 2
+                        };
+                    }
                     return true;
                 } catch (error) {
                     console.error('Error loading game state:', error);
@@ -66,6 +107,7 @@
             const stateLoaded = loadGameState();
             
             initializeCards();
+            updatePlayerStrip();
             updateDisplay();
             updateRoundsDisplay();
             
@@ -73,6 +115,19 @@
             if (stateLoaded) {
                 loadRoundSelection();
             }
+
+            // Add keyboard event listeners for input fields
+            document.getElementById('add-player-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    confirmAddPlayer();
+                }
+            });
+
+            document.getElementById('rename-player-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    confirmRenamePlayer();
+                }
+            });
         });
 
         function initializeNavbarScroll() {
@@ -154,8 +209,250 @@
             saveGameState(); // Save state after card selection changes
         }
 
+        // Helper functions for multiplayer
+        function getCurrentPlayer() {
+            if (!gameState.players || gameState.players.length === 0) {
+                console.error('No players in game state');
+                return null;
+            }
+            return gameState.players.find(p => p.id === gameState.activePlayerId) || gameState.players[0];
+        }
+
         function getCurrentRoundData() {
-            return rounds.find(r => r.round === currentRound) || rounds[rounds.length - 1];
+            const player = getCurrentPlayer();
+            if (!player || !player.rounds || player.rounds.length === 0) {
+                console.error('No rounds found for current player');
+                return null;
+            }
+            return player.rounds.find(r => r.round === player.currentRound) || player.rounds[player.rounds.length - 1];
+        }
+
+        function generatePlayerId() {
+            return 'p' + Date.now() + Math.random().toString(36).substr(2, 9);
+        }
+
+        function getPlayerInitials(name) {
+            return name.split(' ')
+                .map(word => word[0])
+                .filter(Boolean)
+                .slice(0, 2)
+                .join('')
+                .toUpperCase() || '?';
+        }
+
+        function getPlayerTotal(player) {
+            return player.rounds
+                .filter(r => r.saved && !r.busted)
+                .reduce((sum, r) => sum + r.score, 0);
+        }
+
+        // Player management functions
+        function addPlayer(name) {
+            if (gameState.players.length >= 18) {
+                showError("Maximum 18 players reached!");
+                return;
+            }
+
+            const playerNumber = gameState.players.length + 1;
+            const newPlayer = {
+                id: generatePlayerId(),
+                name: name && name.trim() ? name.trim() : `Player ${playerNumber}`,
+                rounds: [
+                    {
+                        round: 1,
+                        cards: [],
+                        selectedCards: new Set(),
+                        score: 0,
+                        flip7: false,
+                        busted: false,
+                        saved: false
+                    }
+                ],
+                currentRound: 1,
+                celebrationShown: false
+            };
+
+            gameState.players.push(newPlayer);
+            switchToPlayer(newPlayer.id);
+            saveGameState();
+        }
+
+        function switchToPlayer(playerId) {
+            saveCurrentSelection();
+            gameState.activePlayerId = playerId;
+            loadRoundSelection();
+            updateDisplay();
+            updateRoundsDisplay();
+            updatePlayerStrip();
+            saveGameState();
+        }
+
+        function showPlayerMenu(playerId) {
+            const player = gameState.players.find(p => p.id === playerId);
+            if (!player) return;
+
+            window.currentMenuPlayerId = playerId;
+            document.getElementById('player-menu-title').textContent = player.name;
+            document.getElementById('player-menu-modal').classList.remove('hidden');
+        }
+
+        function closePlayerMenu() {
+            document.getElementById('player-menu-modal').classList.add('hidden');
+            window.currentMenuPlayerId = null;
+        }
+
+        function showAddPlayerModal() {
+            document.getElementById('add-player-input').value = '';
+            document.getElementById('add-player-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('add-player-input').focus(), 100);
+        }
+
+        function closeAddPlayerModal() {
+            document.getElementById('add-player-modal').classList.add('hidden');
+        }
+
+        function confirmAddPlayer() {
+            const name = document.getElementById('add-player-input').value;
+            addPlayer(name);
+            closeAddPlayerModal();
+        }
+
+        function showRenamePlayerModal() {
+            // Save playerId BEFORE closing menu (which nulls currentMenuPlayerId)
+            const playerId = window.currentMenuPlayerId;
+            const player = gameState.players.find(p => p.id === playerId);
+            
+            closePlayerMenu();
+            
+            if (!player) return;
+
+            // Re-set it so confirmRenamePlayer can use it
+            window.currentMenuPlayerId = playerId;
+            document.getElementById('rename-player-input').value = player.name;
+            document.getElementById('rename-player-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('rename-player-input').focus(), 100);
+        }
+
+        function closeRenamePlayerModal() {
+            document.getElementById('rename-player-modal').classList.add('hidden');
+        }
+
+        function confirmRenamePlayer() {
+            const newName = document.getElementById('rename-player-input').value;
+            const player = gameState.players.find(p => p.id === window.currentMenuPlayerId);
+            
+            if (player) {
+                if (newName && newName.trim()) {
+                    player.name = newName.trim();
+                    updatePlayerStrip();
+                    saveGameState();
+                } else {
+                    // If empty, keep the current name - just close modal
+                }
+            }
+            
+            closeRenamePlayerModal();
+            window.currentMenuPlayerId = null;
+        }
+
+        function showRemovePlayerConfirm() {
+            // Save playerId BEFORE closing menu (which nulls currentMenuPlayerId)
+            const playerId = window.currentMenuPlayerId;
+            const player = gameState.players.find(p => p.id === playerId);
+            
+            closePlayerMenu();
+            
+            if (!player) return;
+
+            if (gameState.players.length === 1) {
+                showError("You need at least one player.");
+                return;
+            }
+
+            // Re-set it so confirmRemovePlayer can use it
+            window.currentMenuPlayerId = playerId;
+            document.getElementById('remove-player-name').textContent = player.name;
+            document.getElementById('remove-player-modal').classList.remove('hidden');
+        }
+
+        function closeRemovePlayerModal() {
+            document.getElementById('remove-player-modal').classList.add('hidden');
+        }
+
+        function confirmRemovePlayer() {
+            const playerId = window.currentMenuPlayerId;
+            const playerIndex = gameState.players.findIndex(p => p.id === playerId);
+            
+            if (playerIndex === -1) {
+                closeRemovePlayerModal();
+                return;
+            }
+
+            // Remove the player
+            gameState.players.splice(playerIndex, 1);
+
+            // If we removed the active player, switch to nearest neighbor
+            if (gameState.activePlayerId === playerId) {
+                const newIndex = Math.min(playerIndex, gameState.players.length - 1);
+                gameState.activePlayerId = gameState.players[newIndex].id;
+                loadRoundSelection();
+            }
+
+            updateDisplay();
+            updateRoundsDisplay();
+            updatePlayerStrip();
+            saveGameState();
+            closeRemovePlayerModal();
+            window.currentMenuPlayerId = null;
+        }
+
+        function showResetPlayerConfirm() {
+            // Save playerId BEFORE closing menu (which nulls currentMenuPlayerId)
+            const playerId = window.currentMenuPlayerId;
+            const player = gameState.players.find(p => p.id === playerId);
+            
+            closePlayerMenu();
+            
+            if (!player) return;
+
+            // Re-set it so confirmResetPlayer can use it
+            window.currentMenuPlayerId = playerId;
+            document.getElementById('reset-player-name').textContent = player.name;
+            document.getElementById('reset-player-modal').classList.remove('hidden');
+        }
+
+        function closeResetPlayerModal() {
+            document.getElementById('reset-player-modal').classList.add('hidden');
+        }
+
+        function confirmResetPlayer() {
+            const player = gameState.players.find(p => p.id === window.currentMenuPlayerId);
+            if (!player) return;
+
+            player.rounds = [
+                {
+                    round: 1,
+                    cards: [],
+                    selectedCards: new Set(),
+                    score: 0,
+                    flip7: false,
+                    busted: false,
+                    saved: false
+                }
+            ];
+            player.currentRound = 1;
+            player.celebrationShown = false;
+
+            if (gameState.activePlayerId === player.id) {
+                loadRoundSelection();
+                updateDisplay();
+                updateRoundsDisplay();
+            }
+
+            updatePlayerStrip();
+            saveGameState();
+            closeResetPlayerModal();
+            window.currentMenuPlayerId = null;
         }
 
         function calculateScore(selectedCards) {
@@ -235,13 +532,50 @@
             };
         }
 
+        function updatePlayerStrip() {
+            const playerStrip = document.getElementById('player-strip');
+            if (!playerStrip) return;
+
+            const chips = gameState.players.map(player => {
+                const total = getPlayerTotal(player);
+                const initials = getPlayerInitials(player.name);
+                const isActive = player.id === gameState.activePlayerId;
+
+                return `
+                    <div class="player-chip ${isActive ? 'active' : ''}" onclick="switchToPlayer('${player.id}')">
+                        <div class="player-chip-content">
+                            <div class="player-initials">${initials}</div>
+                            <div class="player-info">
+                                <div class="player-name">${player.name}</div>
+                                <div class="player-total">${total}</div>
+                            </div>
+                        </div>
+                        <button class="player-menu-btn" onclick="event.stopPropagation(); showPlayerMenu('${player.id}')">⋮</button>
+                    </div>
+                `;
+            }).join('');
+
+            const addButton = gameState.players.length >= 18
+                ? `<div class="add-player-chip disabled">Max 18 players</div>`
+                : `<div class="add-player-chip" onclick="showAddPlayerModal()">+ Add player</div>`;
+
+            playerStrip.innerHTML = chips + addButton;
+        }
+
         function updateDisplay() {
+            const player = getCurrentPlayer();
             const round = getCurrentRoundData();
+            
+            if (!player || !round) {
+                console.error('Cannot update display: missing player or round data');
+                return;
+            }
+            
             const result = calculateScore(round.selectedCards);
             
             // Calculate banked score (all previous completed rounds, excluding busted rounds)
-            const bankedScore = rounds
-                .filter(r => r.saved && r.round < currentRound && !r.busted)
+            const bankedScore = player.rounds
+                .filter(r => r.saved && r.round < player.currentRound && !r.busted)
                 .reduce((sum, r) => sum + r.score, 0);
             
             // Calculate real-time total
@@ -264,34 +598,36 @@
 
             // Update navigation
             updateNavigation();
-
-            // Check for celebration (only when real-time total hits 200)
-            if (realtimeTotal >= 200 && !celebrationShown) {
-                showCelebration();
-                celebrationShown = true;
-            } else if (realtimeTotal < 200) {
-                celebrationShown = false;
-            }
         }
 
         function updateNavigation() {
+            const player = getCurrentPlayer();
+            if (!player) return;
+            
             const prevButton = document.getElementById('prev-round');
             const nextButton = document.getElementById('next-round');
             const indicator = document.getElementById('round-indicator');
 
-            indicator.textContent = `Round ${currentRound}`;
-            prevButton.disabled = currentRound === 1;
+            indicator.textContent = `Round ${player.currentRound}`;
+            prevButton.disabled = player.currentRound === 1;
             
             // Enable next if current round is saved or if there's already a next round
             const currentRoundData = getCurrentRoundData();
-            const hasNextRound = rounds.some(r => r.round === currentRound + 1);
+            if (!currentRoundData) {
+                nextButton.disabled = true;
+                return;
+            }
+            const hasNextRound = player.rounds.some(r => r.round === player.currentRound + 1);
             nextButton.disabled = !currentRoundData.saved && !hasNextRound;
         }
 
         function goToPreviousRound() {
-            if (currentRound > 1) {
+            const player = getCurrentPlayer();
+            if (!player) return;
+            
+            if (player.currentRound > 1) {
                 saveCurrentSelection();
-                currentRound--;
+                player.currentRound--;
                 loadRoundSelection();
                 updateDisplay();
                 updateRoundsDisplay();
@@ -300,15 +636,20 @@
         }
 
         function goToNextRound() {
+            const player = getCurrentPlayer();
+            if (!player) return;
+            
             const currentRoundData = getCurrentRoundData();
-            if (currentRoundData.saved || rounds.some(r => r.round === currentRound + 1)) {
+            if (!currentRoundData) return;
+            
+            if (currentRoundData.saved || player.rounds.some(r => r.round === player.currentRound + 1)) {
                 saveCurrentSelection();
-                currentRound++;
+                player.currentRound++;
                 
                 // Create new round if it doesn't exist
-                if (!rounds.some(r => r.round === currentRound)) {
-                    rounds.push({
-                        round: currentRound,
+                if (!player.rounds.some(r => r.round === player.currentRound)) {
+                    player.rounds.push({
+                        round: player.currentRound,
                         cards: [],
                         selectedCards: new Set(),
                         score: 0,
@@ -326,8 +667,11 @@
         }
 
         function goToRound(roundNumber) {
+            const player = getCurrentPlayer();
+            if (!player) return;
+            
             saveCurrentSelection();
-            currentRound = roundNumber;
+            player.currentRound = roundNumber;
             loadRoundSelection();
             updateDisplay();
             updateRoundsDisplay();
@@ -357,7 +701,11 @@
         }
 
         function bankRound() {
+            const player = getCurrentPlayer();
             const round = getCurrentRoundData();
+            
+            if (!player || !round) return;
+            
             const result = calculateScore(round.selectedCards);
             
             // Update round data
@@ -370,19 +718,43 @@
             round.busted = false; // Banking removes bust status
             round.saved = true;
 
+            // Calculate NEW banked total AFTER this round is saved
+            const newBankedTotal = player.rounds
+                .filter(r => r.saved && !r.busted)
+                .reduce((sum, r) => sum + r.score, 0);
+
+            // Check for celebration (only when BANKING 200+)
+            const shouldCelebrate = newBankedTotal >= 200 && !player.celebrationShown;
+            
+            if (shouldCelebrate) {
+                player.celebrationShown = true;
+            } else if (newBankedTotal < 200) {
+                // Reset celebration flag if score falls below 200 (allows re-celebration)
+                player.celebrationShown = false;
+            }
+
             // Update displays
             updateDisplay();
             updateRoundsDisplay();
+            updatePlayerStrip();
             saveGameState(); // Save state after banking
 
+            // Show celebration AFTER updating displays and saving
+            if (shouldCelebrate) {
+                showLeaderboard(player);
+            }
+
             // Auto-advance to next round only if this is a new round
-            if (currentRound === rounds.length) {
+            if (player.currentRound === player.rounds.length) {
                     goToNextRound();
             }
         }
 
         function bustRound() {
+            const player = getCurrentPlayer();
             const round = getCurrentRoundData();
+            
+            if (!player || !round) return;
             
             // Update round data
             round.cards = Array.from(round.selectedCards).map(cardId => {
@@ -397,22 +769,26 @@
             // Update displays
             updateDisplay();
             updateRoundsDisplay();
+            updatePlayerStrip();
             saveGameState(); // Save state after busting
 
             // Auto-advance to next round only if this is a new round
-            if (currentRound === rounds.length) {
+            if (player.currentRound === player.rounds.length) {
                     goToNextRound();
             }
         }
 
         function updateRoundsDisplay() {
+            const player = getCurrentPlayer();
+            if (!player) return;
+            
             const roundsList = document.getElementById('rounds-list');
-            const totalScore = rounds.filter(r => r.saved && !r.busted).reduce((sum, r) => sum + r.score, 0);
+            const totalScore = player.rounds.filter(r => r.saved && !r.busted).reduce((sum, r) => sum + r.score, 0);
             
             document.getElementById('total-score').textContent = totalScore;
 
-            roundsList.innerHTML = rounds.map(round => `
-                <div class="round-item ${round.round === currentRound ? 'current' : ''}" onclick="goToRound(${round.round})">
+            roundsList.innerHTML = player.rounds.map(round => `
+                <div class="round-item ${round.round === player.currentRound ? 'current' : ''}" onclick="goToRound(${round.round})">
                     <div class="round-info">
                         <div class="round-number">Round ${round.round}</div>
                         <div class="round-cards">${
@@ -438,19 +814,26 @@
             document.getElementById('restart-modal').classList.add('hidden');
         }
 
-        function restartGame() {
+        function restartAllPlayers() {
             closeRestartConfirmation();
-            rounds = [{
-                round: 1,
-                cards: [],
-                selectedCards: new Set(),
-                score: 0,
-                flip7: false,
-                busted: false,
-                saved: false
-            }];
-            currentRound = 1;
-            celebrationShown = false;
+            
+            // Reset all players' scores and rounds (keep the players themselves)
+            gameState.players.forEach(player => {
+                player.rounds = [{
+                    round: 1,
+                    cards: [],
+                    selectedCards: new Set(),
+                    score: 0,
+                    flip7: false,
+                    busted: false,
+                    saved: false
+                }];
+                player.currentRound = 1;
+                player.celebrationShown = false;
+            });
+            
+            // Keep the current active player, just load their reset state
+            loadRoundSelection();
             
             // Clear all visual selections
             document.querySelectorAll('.card.selected').forEach(card => {
@@ -459,16 +842,171 @@
             
             updateDisplay();
             updateRoundsDisplay();
-            clearGameState(); // Clear saved state when restarting
+            updatePlayerStrip();
+            saveGameState(); // Save the reset state
+        }
+
+        function restartActivePlayer() {
+            closeRestartConfirmation();
+            const player = getCurrentPlayer();
+            
+            if (!player) return;
+            
+            player.rounds = [{
+                round: 1,
+                cards: [],
+                selectedCards: new Set(),
+                score: 0,
+                flip7: false,
+                busted: false,
+                saved: false
+            }];
+            player.currentRound = 1;
+            player.celebrationShown = false;
+            
+            // Clear all visual selections
+            document.querySelectorAll('.card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            updateDisplay();
+            updateRoundsDisplay();
+            updatePlayerStrip();
+            saveGameState();
+        }
+
+        function resetEntireGame() {
+            closeRestartConfirmation();
+            
+            // Complete reset: remove all players and start fresh
+            gameState.players = [{
+                id: 'p1',
+                name: 'Player 1',
+                rounds: [{
+                    round: 1,
+                    cards: [],
+                    selectedCards: new Set(),
+                    score: 0,
+                    flip7: false,
+                    busted: false,
+                    saved: false
+                }],
+                currentRound: 1,
+                celebrationShown: false
+            }];
+            gameState.activePlayerId = 'p1';
+            
+            // Clear all visual selections
+            document.querySelectorAll('.card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            updateDisplay();
+            updateRoundsDisplay();
+            updatePlayerStrip();
+            saveGameState();
+        }
+
+        function showLeaderboard(winningPlayer = null) {
+            updateLeaderboardDisplay();
+            
+            // If there's a winning player, show celebration announcement
+            if (winningPlayer) {
+                const total = getPlayerTotal(winningPlayer);
+                document.getElementById('leaderboard-emoji').textContent = '🎉';
+                document.getElementById('leaderboard-title').textContent = 'Congratulations!';
+                document.getElementById('winner-name').textContent = winningPlayer.name;
+                document.getElementById('winner-score').textContent = total;
+                document.getElementById('winner-announcement').classList.remove('hidden');
+                document.getElementById('leaderboard-section-label').classList.remove('hidden');
+                document.getElementById('celebration-coffee').classList.remove('hidden');
+                
+                // Create confetti effect
+                createConfetti();
+            } else {
+                // Just showing leaderboard (no winner)
+                document.getElementById('leaderboard-emoji').textContent = '🏆';
+                document.getElementById('leaderboard-title').textContent = 'Game Standings';
+                document.getElementById('winner-announcement').classList.add('hidden');
+                document.getElementById('leaderboard-section-label').classList.add('hidden');
+                document.getElementById('celebration-coffee').classList.add('hidden');
+            }
+            
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+            saveGameState(); // Save state when leaderboard is shown
+        }
+
+        function closeLeaderboard() {
+            document.getElementById('leaderboard-modal').classList.add('hidden');
+            // Clear confetti
+            const confettiContainer = document.getElementById('confetti-container');
+            if (confettiContainer) {
+                confettiContainer.innerHTML = '';
+            }
+        }
+
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti-container');
+            confettiContainer.innerHTML = '';
+            
+            const colors = ['#fbb03a', '#fbcf8a', '#1d9995', '#2b3276', '#fff4d2'];
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        function updateLeaderboardDisplay() {
+            const leaderboardList = document.getElementById('leaderboard-list');
+            
+            // Sort players by total score descending
+            const sortedPlayers = [...gameState.players].sort((a, b) => {
+                return getPlayerTotal(b) - getPlayerTotal(a);
+            });
+
+            leaderboardList.innerHTML = sortedPlayers.map((player, index) => {
+                const total = getPlayerTotal(player);
+                const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                
+                return `
+                    <div class="leaderboard-item ${player.id === gameState.activePlayerId ? 'active-player' : ''}">
+                        <div class="leaderboard-rank">${rankEmoji || (index + 1) + '.'}</div>
+                        <div class="leaderboard-player">
+                            <div class="leaderboard-name">${player.name}</div>
+                        </div>
+                        <div class="leaderboard-score">${total}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleRoundsSection() {
+            const roundsSection = document.getElementById('rounds-section');
+            const toggleBtn = document.getElementById('toggle-rounds-btn');
+            
+            if (roundsSection.classList.contains('hidden')) {
+                roundsSection.classList.remove('hidden');
+                toggleBtn.textContent = 'Hide Rounds';
+                updateRoundsDisplay();
+            } else {
+                roundsSection.classList.add('hidden');
+                toggleBtn.textContent = 'View Rounds';
+            }
         }
 
         function showCelebration() {
-            document.getElementById('celebration-modal').classList.remove('hidden');
-            saveGameState(); // Save state when celebration is shown
+            showLeaderboard();
         }
 
         function closeCelebration() {
-            document.getElementById('celebration-modal').classList.add('hidden');
+            closeLeaderboard();
         }
 
         function showError(message) {
@@ -494,9 +1032,98 @@
             document.getElementById('share-modal').classList.add('hidden');
         }
 
+        function copyLinkToClipboard() {
+            const url = window.location.href.split('?')[0]; // Get base URL without query params
+            
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                    .then(() => {
+                        showSnackbar('Link copied to clipboard! 📋');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy:', err);
+                        fallbackCopyToClipboard(url);
+                    });
+            } else {
+                fallbackCopyToClipboard(url);
+            }
+        }
+
+        function fallbackCopyToClipboard(text) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showSnackbar('Link copied to clipboard! 📋');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                showSnackbar('Failed to copy link');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showSnackbar(message) {
+            const snackbar = document.getElementById('snackbar');
+            const messageElement = document.getElementById('snackbar-message');
+            
+            messageElement.textContent = message;
+            snackbar.classList.remove('hidden');
+            snackbar.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                snackbar.classList.remove('show');
+                setTimeout(() => {
+                    snackbar.classList.add('hidden');
+                }, 300); // Wait for fade out animation
+            }, 3000);
+        }
+
         // Ensure these functions are available globally
         window.showShareModal = showShareModal;
         window.closeShareModal = closeShareModal;
+        window.copyLinkToClipboard = copyLinkToClipboard;
+        
+        // Expose multiplayer functions to global scope
+        window.switchToPlayer = switchToPlayer;
+        window.showPlayerMenu = showPlayerMenu;
+        window.closePlayerMenu = closePlayerMenu;
+        window.showAddPlayerModal = showAddPlayerModal;
+        window.closeAddPlayerModal = closeAddPlayerModal;
+        window.confirmAddPlayer = confirmAddPlayer;
+        window.showRenamePlayerModal = showRenamePlayerModal;
+        window.closeRenamePlayerModal = closeRenamePlayerModal;
+        window.confirmRenamePlayer = confirmRenamePlayer;
+        window.showRemovePlayerConfirm = showRemovePlayerConfirm;
+        window.closeRemovePlayerModal = closeRemovePlayerModal;
+        window.confirmRemovePlayer = confirmRemovePlayer;
+        window.showResetPlayerConfirm = showResetPlayerConfirm;
+        window.closeResetPlayerModal = closeResetPlayerModal;
+        window.confirmResetPlayer = confirmResetPlayer;
+        window.showRestartConfirmation = showRestartConfirmation;
+        window.closeRestartConfirmation = closeRestartConfirmation;
+        window.restartAllPlayers = restartAllPlayers;
+        window.restartActivePlayer = restartActivePlayer;
+        window.resetEntireGame = resetEntireGame;
+        window.showLeaderboard = showLeaderboard;
+        window.closeLeaderboard = closeLeaderboard;
+        window.closeCelebration = closeCelebration;
+        window.closeError = closeError;
+        window.bankAndCloseError = bankAndCloseError;
+        window.toggleRoundsSection = toggleRoundsSection;
+        window.goToPreviousRound = goToPreviousRound;
+        window.goToNextRound = goToNextRound;
+        window.goToRound = goToRound;
+        window.bankRound = bankRound;
+        window.bustRound = bustRound;
 
         // Test function to verify warning scenarios
         function testWarningScenarios() {

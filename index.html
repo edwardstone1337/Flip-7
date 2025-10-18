@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flip 7 Score Tracker – Free Online Scoring App for Solo & Group Play</title>
-    <meta name="description" content="Flip 7 score tracker and rules FAQ. Track your solo or group Flip 7 rounds, calculate scores, and learn how to play Flip 7 with bonus and bust rules explained.">
-    <meta name="keywords" content="Flip 7 card game, Flip 7 rules, Flip 7 score calculator, Flip 7 solo mode, Flip 7 scoring system, Flip 7 bonus, Flip 7 bust, Flip 7 strategy">
+    <title>Flip 7 Rules & Score Tracker – Free Scoring Calculator & Game Guide</title>
+    <meta name="description" content="Free Flip 7 rules reference and score tracker. Calculate scores, track multiplayer games, and master Flip 7 game rules including bonuses, bust conditions, and winning strategies.">
+    <meta name="keywords" content="Flip 7 rules, Flip 7 game rules, Flip 7 how to play, Flip 7 score calculator, Flip 7 scoring rules, Flip 7 card game, Flip 7 strategy, Flip 7 bonus rules, Flip 7 multiplayer, Flip 7 scorekeeper">
     <meta name="author" content="Flip 7 Scoreboard">
     <link rel="canonical" href="https://www.flip7scorecard.com/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,6 +29,29 @@
             a.appendChild(r);
         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
     </script>
+    
+    <!-- Schema.org structured data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Flip 7 Score Tracker",
+      "applicationCategory": "GameApplication",
+      "description": "Free Flip 7 rules reference and multiplayer score tracker. Calculate scores, learn game rules, and track your Flip 7 card game progress.",
+      "url": "https://www.flip7scorecard.com",
+      "author": {
+        "@type": "Person",
+        "name": "Ed the Designer"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "keywords": "Flip 7 rules, Flip 7 game rules, Flip 7 score calculator, Flip 7 how to play, Flip 7 scoring system",
+      "disclaimer": "This is a fan-made tool. Flip 7 is a trademark of The Op Games."
+    }
+    </script>
   </head>
   <body>
     <!-- Top Navigation -->
@@ -42,7 +65,7 @@
         </a>
         <div class="nav-links">
           <a href="/" class="nav-link active">Play</a>
-          <a href="/faq/" class="nav-link">FAQ</a>
+          <a href="/faq/" class="nav-link">Rules</a>
           <button class="nav-link share-button" onclick="showShareModal()">Share</button>
         </div>
       </div>
@@ -51,20 +74,28 @@
     <div class="app-container-wrapper">
     <div class="app-container">
       <div class="app-header">
-        <h1 style="display: none;">Flip 7 Score Calculator</h1>
+        <h1 style="display: none;">Flip 7 Rules & Score Calculator - Free Flip 7 Game Rules Guide</h1>
+        <h2 style="display: none;">Flip 7 Scoring Rules: Track multiplayer games, calculate scores, and master the Flip 7 card game</h2>
         <div class="app-title">
           <div class="title-main">Flip 7</div>
           <div class="title-sub">Score Calculator</div>
         </div>
       </div>
 
+      <!-- Player Strip -->
+      <div class="player-strip-container">
+        <div class="player-strip" id="player-strip">
+          <!-- Player chips dynamically rendered -->
+        </div>
+      </div>
+
       <div class="score-display">
         <div class="banked-label">Banked Score</div>
-        <div class="banked-score" id="banked-score">0</div>
+        <div class="banked-score" id="banked-score" aria-live="polite">0</div>
         
-        <div class="realtime-score" id="realtime-score">0</div>
+        <div class="realtime-score" id="realtime-score" aria-live="polite">0</div>
         <div class="realtime-label">Real-time Total</div>
-        <div class="score-details" id="score-breakdown">
+        <div class="score-details" id="score-breakdown" aria-live="polite">
           Select cards to calculate score
         </div>
         <div class="status-indicators">
@@ -182,8 +213,15 @@
         </div>
       </div>
 
+      <!-- Toggle Rounds Button -->
+      <div class="toggle-rounds-container">
+        <button class="toggle-rounds-button" id="toggle-rounds-btn" onclick="toggleRoundsSection()">
+          View Rounds
+        </button>
+      </div>
+
       <!-- Rounds History -->
-      <div class="rounds-section">
+      <div class="rounds-section hidden" id="rounds-section">
         <div class="rounds-header">
           <div class="rounds-title">All Rounds</div>
           <div class="total-score">Total: <span id="total-score">0</span></div>
@@ -199,8 +237,11 @@
         </div>
       </div>
 
-      <!-- Restart Game Button -->
-      <div class="restart-container">
+      <!-- Action Buttons -->
+      <div class="action-buttons-container">
+        <button class="summary-button" onclick="showLeaderboard()">
+          Game Summary
+        </button>
         <button class="restart-button" onclick="showRestartConfirmation()">
           Restart Game
         </button>
@@ -210,13 +251,24 @@
       <div id="restart-modal" class="celebration hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">🔄</div>
-          <div class="celebration-text">Are you sure you want to restart the game? This will clear all rounds and scores.</div>
+          <div class="celebration-text">Reset Options</div>
+          <div class="reset-options-container">
+            <div class="reset-option" onclick="restartActivePlayer()">
+              <div class="reset-option-title">Reset Active Player</div>
+              <div class="reset-option-desc">Clear rounds & scores for current player only</div>
+            </div>
+            <div class="reset-option" onclick="restartAllPlayers()">
+              <div class="reset-option-title">Reset All Scores</div>
+              <div class="reset-option-desc">Clear all players' rounds & scores (keeps names)</div>
+            </div>
+            <div class="reset-option danger" onclick="resetEntireGame()">
+              <div class="reset-option-title">Reset Entire Game</div>
+              <div class="reset-option-desc">Remove all players and start fresh</div>
+            </div>
+          </div>
           <div class="modal-buttons">
-            <button onclick="closeRestartConfirmation()" class="modal-button secondary">
+            <button onclick="closeRestartConfirmation()" class="modal-button secondary full-width">
               Cancel
-            </button>
-            <button onclick="restartGame()" class="modal-button primary">
-              Restart
             </button>
           </div>
         </div>
@@ -255,16 +307,166 @@
       <div id="share-modal" class="celebration hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">📱</div>
-          <div class="celebration-text">Scan to share</div>
+          <div class="celebration-text">Share Flip 7</div>
           <div class="qr-code-container">
             <img src="flip7-qr.png" alt="Flip 7 Scorecard QR code" style="width:200px;max-width:100%;height:auto;display:block;margin:0 auto;" />
           </div>
           <div class="modal-buttons">
-            <button onclick="closeShareModal()" class="modal-button primary">
+            <button onclick="copyLinkToClipboard()" class="modal-button primary">
+              📋 Copy Link
+            </button>
+            <button onclick="closeShareModal()" class="modal-button secondary">
               Close
             </button>
           </div>
+          <div class="share-disclaimer">
+            (Just shares the app link — I'm one guy and haven't figured out multiplayer sync yet 😅)
+          </div>
         </div>
+      </div>
+
+      <!-- Player Menu Modal -->
+      <div id="player-menu-modal" class="celebration hidden">
+        <div class="celebration-content">
+          <div class="celebration-text" id="player-menu-title">Player</div>
+          <div class="modal-buttons-vertical">
+            <button onclick="showRenamePlayerModal()" class="modal-button primary">
+              Rename Player
+            </button>
+            <button onclick="showResetPlayerConfirm()" class="modal-button secondary">
+              Reset This Player
+            </button>
+            <button onclick="showRemovePlayerConfirm()" class="modal-button danger">
+              Remove Player
+            </button>
+            <button onclick="closePlayerMenu()" class="modal-button secondary">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Player Modal -->
+      <div id="add-player-modal" class="celebration hidden">
+        <div class="celebration-content">
+          <div class="celebration-emoji">➕</div>
+          <div class="celebration-text">Add New Player</div>
+          <input 
+            type="text" 
+            id="add-player-input" 
+            class="player-input" 
+            placeholder="Player name (optional)"
+            maxlength="20"
+          />
+          <div class="modal-buttons">
+            <button onclick="closeAddPlayerModal()" class="modal-button secondary">
+              Cancel
+            </button>
+            <button onclick="confirmAddPlayer()" class="modal-button primary">
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rename Player Modal -->
+      <div id="rename-player-modal" class="celebration hidden">
+        <div class="celebration-content">
+          <div class="celebration-emoji">✏️</div>
+          <div class="celebration-text">Rename Player</div>
+          <input 
+            type="text" 
+            id="rename-player-input" 
+            class="player-input" 
+            placeholder="New player name"
+            maxlength="20"
+          />
+          <div class="modal-buttons">
+            <button onclick="closeRenamePlayerModal()" class="modal-button secondary">
+              Cancel
+            </button>
+            <button onclick="confirmRenamePlayer()" class="modal-button primary">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remove Player Confirmation Modal -->
+      <div id="remove-player-modal" class="celebration hidden">
+        <div class="celebration-content">
+          <div class="celebration-emoji">⚠️</div>
+          <div class="celebration-text">Remove <span id="remove-player-name"></span>?</div>
+          <div class="celebration-subtext">This will permanently delete their rounds and scores.</div>
+          <div class="modal-buttons">
+            <button onclick="closeRemovePlayerModal()" class="modal-button secondary">
+              Cancel
+            </button>
+            <button onclick="confirmRemovePlayer()" class="modal-button danger">
+              Remove Player
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Player Confirmation Modal -->
+      <div id="reset-player-modal" class="celebration hidden">
+        <div class="celebration-content">
+          <div class="celebration-emoji">🔄</div>
+          <div class="celebration-text">Reset <span id="reset-player-name"></span>?</div>
+          <div class="celebration-subtext">This will clear all rounds and scores for this player.</div>
+          <div class="modal-buttons">
+            <button onclick="closeResetPlayerModal()" class="modal-button secondary">
+              Cancel
+            </button>
+            <button onclick="confirmResetPlayer()" class="modal-button primary">
+              Reset Player
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Modal -->
+      <div id="leaderboard-modal" class="celebration hidden">
+        <div class="celebration-content leaderboard-content">
+          <div class="confetti-container" id="confetti-container"></div>
+          <div class="celebration-emoji" id="leaderboard-emoji">🎉</div>
+          <div class="celebration-text" id="leaderboard-title">Game Standings</div>
+          <div class="winner-announcement hidden" id="winner-announcement">
+            <div class="winner-name" id="winner-name"></div>
+            <div class="winner-score-label">scored</div>
+            <div class="winner-score" id="winner-score"></div>
+            <div class="winner-message">200 points reached! 🎯</div>
+          </div>
+          <div class="leaderboard-section-label hidden" id="leaderboard-section-label">
+            Final Standings
+          </div>
+          <div id="leaderboard-list" class="leaderboard-list">
+            <!-- Leaderboard items dynamically rendered -->
+          </div>
+          <div class="celebration-coffee hidden" id="celebration-coffee">
+            <div class="celebration-coffee-text">Enjoying the app? ☕</div>
+            <a href="https://www.buymeacoffee.com/edthedesigner" target="_blank" rel="noopener noreferrer" class="coffee-link">
+              <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=edthedesigner&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" class="celebration-coffee-img" />
+            </a>
+          </div>
+          <div class="modal-buttons">
+            <button onclick="closeLeaderboard()" class="modal-button primary">
+              Awesome!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Snackbar Notification -->
+      <div id="snackbar" class="snackbar hidden">
+        <span id="snackbar-message">Link copied!</span>
+      </div>
+
+      <!-- Hidden SEO Content for Flip 7 Rules -->
+      <div style="display: none;" aria-hidden="true">
+        <h3>Flip 7 Card Game Rules</h3>
+        <p>Flip 7 is a press-your-luck card game where players race to be the first to reach 200 points. Learn the complete Flip 7 rules: draw cards, avoid duplicates to prevent busting, and use the Flip 7 bonus by collecting 7 unique number cards for 15 extra points. Master Flip 7 scoring rules with our multiplayer score tracker and calculator.</p>
       </div>
     </div>
 
@@ -276,7 +478,7 @@
       </div>
       
       <div class="footer-description">
-        Flip 7 Tracker is a free online scorekeeper and rules reference for Flip 7.
+        Flip 7 Score Tracker is a free online scorekeeper and rules reference. Learn Flip 7 game rules, track scores, and master the 200-point card game.
       </div>
       
       <div class="footer-disclaimer">
