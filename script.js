@@ -128,6 +128,17 @@
                     confirmRenamePlayer();
                 }
             });
+
+            // Add click-outside-to-dismiss for leaderboard modal
+            const leaderboardModal = document.getElementById('leaderboard-modal');
+            if (leaderboardModal) {
+                leaderboardModal.addEventListener('click', function(e) {
+                    // Close modal if clicking on the backdrop (not the content)
+                    if (e.target === leaderboardModal) {
+                        closeLeaderboard();
+                    }
+                });
+            }
         });
 
         function initializeNavbarScroll() {
@@ -365,7 +376,7 @@
             if (!player) return;
 
             if (gameState.players.length === 1) {
-                showError("You need at least one player.");
+                showError("You need at least one player.", 'reset');
                 return;
             }
 
@@ -806,16 +817,16 @@
             `).join('');
         }
 
-        function showRestartConfirmation() {
-            document.getElementById('restart-modal').classList.remove('hidden');
+        function showResetConfirmation() {
+            document.getElementById('reset-modal').classList.remove('hidden');
         }
 
-        function closeRestartConfirmation() {
-            document.getElementById('restart-modal').classList.add('hidden');
+        function closeResetConfirmation() {
+            document.getElementById('reset-modal').classList.add('hidden');
         }
 
-        function restartAllPlayers() {
-            closeRestartConfirmation();
+        function resetAllPlayers() {
+            closeResetConfirmation();
             
             // Reset all players' scores and rounds (keep the players themselves)
             gameState.players.forEach(player => {
@@ -846,8 +857,8 @@
             saveGameState(); // Save the reset state
         }
 
-        function restartActivePlayer() {
-            closeRestartConfirmation();
+        function resetActivePlayer() {
+            closeResetConfirmation();
             const player = getCurrentPlayer();
             
             if (!player) return;
@@ -876,7 +887,7 @@
         }
 
         function resetEntireGame() {
-            closeRestartConfirmation();
+            closeResetConfirmation();
             
             // Complete reset: remove all players and start fresh
             gameState.players = [{
@@ -1009,8 +1020,18 @@
             closeLeaderboard();
         }
 
-        function showError(message) {
+        function showError(message, buttonType = 'bank') {
             document.getElementById('error-message').textContent = message;
+            const actionButton = document.getElementById('error-action-button');
+            
+            if (buttonType === 'reset') {
+                actionButton.textContent = 'Reset Player';
+                actionButton.onclick = resetAndCloseError;
+            } else {
+                actionButton.textContent = 'Bank it';
+                actionButton.onclick = bankAndCloseError;
+            }
+            
             document.getElementById('error-modal').classList.remove('hidden');
         }
 
@@ -1021,6 +1042,36 @@
         function bankAndCloseError() {
             closeError();
             bankRound();
+        }
+
+        function resetAndCloseError() {
+            closeError();
+            const player = getCurrentPlayer();
+            if (!player) return;
+
+            player.rounds = [{
+                round: 1,
+                cards: [],
+                selectedCards: new Set(),
+                score: 0,
+                flip7: false,
+                busted: false,
+                saved: false
+            }];
+            player.currentRound = 1;
+            player.celebrationShown = false;
+
+            loadRoundSelection();
+            
+            // Clear all visual selections
+            document.querySelectorAll('.card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            updateDisplay();
+            updateRoundsDisplay();
+            updatePlayerStrip();
+            saveGameState();
         }
 
         // Share modal functions
@@ -1108,16 +1159,17 @@
         window.showResetPlayerConfirm = showResetPlayerConfirm;
         window.closeResetPlayerModal = closeResetPlayerModal;
         window.confirmResetPlayer = confirmResetPlayer;
-        window.showRestartConfirmation = showRestartConfirmation;
-        window.closeRestartConfirmation = closeRestartConfirmation;
-        window.restartAllPlayers = restartAllPlayers;
-        window.restartActivePlayer = restartActivePlayer;
+        window.showResetConfirmation = showResetConfirmation;
+        window.closeResetConfirmation = closeResetConfirmation;
+        window.resetAllPlayers = resetAllPlayers;
+        window.resetActivePlayer = resetActivePlayer;
         window.resetEntireGame = resetEntireGame;
         window.showLeaderboard = showLeaderboard;
         window.closeLeaderboard = closeLeaderboard;
         window.closeCelebration = closeCelebration;
         window.closeError = closeError;
         window.bankAndCloseError = bankAndCloseError;
+        window.resetAndCloseError = resetAndCloseError;
         window.toggleRoundsSection = toggleRoundsSection;
         window.goToPreviousRound = goToPreviousRound;
         window.goToNextRound = goToNextRound;

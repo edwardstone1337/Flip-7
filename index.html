@@ -242,22 +242,22 @@
         <button class="summary-button" onclick="showLeaderboard()">
           Game Summary
         </button>
-        <button class="restart-button" onclick="showRestartConfirmation()">
-          Restart Game
+        <button class="reset-button" onclick="showResetConfirmation()">
+          Reset Game
         </button>
       </div>
 
-      <!-- Restart Confirmation Modal -->
-      <div id="restart-modal" class="celebration hidden">
+      <!-- Reset Confirmation Modal -->
+      <div id="reset-modal" class="celebration hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">🔄</div>
           <div class="celebration-text">Reset Options</div>
           <div class="reset-options-container">
-            <div class="reset-option" onclick="restartActivePlayer()">
+            <div class="reset-option" onclick="resetActivePlayer()">
               <div class="reset-option-title">Reset Active Player</div>
               <div class="reset-option-desc">Clear rounds & scores for current player only</div>
             </div>
-            <div class="reset-option" onclick="restartAllPlayers()">
+            <div class="reset-option" onclick="resetAllPlayers()">
               <div class="reset-option-title">Reset All Scores</div>
               <div class="reset-option-desc">Clear all players' rounds & scores (keeps names)</div>
             </div>
@@ -267,7 +267,7 @@
             </div>
           </div>
           <div class="modal-buttons">
-            <button onclick="closeRestartConfirmation()" class="modal-button secondary full-width">
+            <button onclick="closeResetConfirmation()" class="modal-button secondary full-width">
               Cancel
             </button>
           </div>
@@ -296,7 +296,7 @@
             <button onclick="closeError()" class="modal-button secondary">
               Cancel
             </button>
-            <button onclick="bankAndCloseError()" class="modal-button primary">
+            <button id="error-action-button" onclick="bankAndCloseError()" class="modal-button primary">
               Bank it
             </button>
           </div>
@@ -437,6 +437,9 @@
             <div class="winner-score-label">scored</div>
             <div class="winner-score" id="winner-score"></div>
             <div class="winner-message">200 points reached! 🎯</div>
+            <button onclick="closeLeaderboard()" class="modal-button winner-continue-button">
+              Continue Playing
+            </button>
           </div>
           <div class="leaderboard-section-label hidden" id="leaderboard-section-label">
             Final Standings
@@ -452,7 +455,7 @@
           </div>
           <div class="modal-buttons">
             <button onclick="closeLeaderboard()" class="modal-button primary">
-              Awesome!
+              Close
             </button>
           </div>
         </div>

@@ -887,6 +887,36 @@ body {
   color: var(--brand-cream);
   font-family: var(--font-body);
   font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Continue Playing Button inside Winner Announcement */
+.winner-continue-button {
+  background: var(--brand-orange);
+  color: var(--brand-navy);
+  border: 2px solid var(--brand-orange);
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 18px;
+  transition: all 0.2s ease;
+  margin: 8px auto 0;
+  width: 100%;
+  max-width: 280px;
+  display: block;
+}
+
+.winner-continue-button:hover {
+  background: var(--brand-orange-light);
+  border-color: var(--brand-orange-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 176, 58, 0.4);
+}
+
+.winner-continue-button:active {
+  transform: translateY(0);
 }
 
 /* Leaderboard Styles */
@@ -1076,18 +1106,18 @@ body {
 }
 
 .action-buttons-container .summary-button,
-.action-buttons-container .restart-button {
+.action-buttons-container .reset-button {
   flex: 1;
 }
 
-.restart-container {
+.reset-container {
   margin-top: 8px;
   text-align: center;
   width: 100%;
 }
 
-/* Restart Button - Danger Style */
-.restart-button {
+/* Reset Button - Danger Style */
+.reset-button {
   background: var(--brand-red);
   border: none;
   color: white;
@@ -1101,13 +1131,13 @@ body {
   min-height: 48px;
 }
 
-.restart-button:hover {
+.reset-button:hover {
   background: var(--brand-red-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.restart-button:active {
+.reset-button:active {
   transform: translateY(0);
 }
 
