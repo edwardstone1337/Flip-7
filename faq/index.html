@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <link rel="icon" type="image/png" href="../favicon.png" />
     
     <!-- Hotjar Tracking Code for Flip 7 Scorecard -->
@@ -27,6 +28,15 @@
             r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
             a.appendChild(r);
         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EWP1726FBR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-EWP1726FBR');
     </script>
     
     <!-- FAQPage Structured Data -->
@@ -442,12 +452,14 @@
       </div>
       
       <div class="coffee-button-container">
-        <a href="https://www.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=edthedesigner&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.buymeacoffee.com/edthedesigner" target="_blank" rel="noopener noreferrer">
           <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=edthedesigner&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" />
         </a>
       </div>
     </footer>
-  </div> 
+  </div>
+    <div id="es-footer" data-project="flip7"></div>
+    <script type="module" src="https://footer.edwardstone.design/src/footer.js"></script>
 
     <script>
       // Navbar scroll functionality
@@ -492,10 +504,20 @@
         });
       }
 
-      // Accordion functionality
+      // Accordion functionality and dynamic QR
       document.addEventListener('DOMContentLoaded', function() {
         // Initialize navbar scroll functionality
         initializeNavbarScroll();
+
+        // Dynamic QR code generation for share modal (run once at init)
+        var qrImg = document.querySelector('#share-modal img[src*="flip7-qr"]');
+        if (qrImg && typeof qrcode !== 'undefined') {
+          var qr = qrcode(0, 'M');
+          qr.addData('https://flip7scorecard.com?utm_source=share&utm_medium=qr_code');
+          qr.make();
+          qrImg.src = qr.createDataURL(8, 0);
+          qrImg.alt = 'Scan to open Flip 7 Scorecard';
+        }
         
         const accordionHeaders = document.querySelectorAll('.accordion-header');
         
@@ -513,6 +535,9 @@
             // Toggle aria-expanded for accessibility
             const isExpanded = this.classList.contains('active');
             this.setAttribute('aria-expanded', isExpanded);
+            if (isExpanded && typeof gtag === 'function') {
+              gtag('event', 'faq_accordion_open', { faq_id: this.getAttribute('aria-controls') });
+            }
           });
         });
 

@@ -1,3 +1,9 @@
+        function trackEvent(eventName, params) {
+            if (typeof gtag === 'function') {
+                gtag('event', eventName, params);
+            }
+        }
+
         // Game state - Multiplayer structure
         let gameState = {
             players: [
@@ -139,6 +145,31 @@
                     }
                 });
             }
+
+            // Coffee link tracking
+            document.querySelectorAll('a[href*="buymeacoffee.com/edthedesigner"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    var location = this.closest('#celebration-coffee') ? 'leaderboard' : 'footer';
+                    trackEvent('coffee_click', { location: location });
+                });
+            });
+
+            // Nav link tracking
+            document.querySelectorAll('.nav-link:not(.share-button), .nav-logo-link, .footer-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    trackEvent('nav_click', { destination: this.getAttribute('href') || this.textContent.trim() });
+                });
+            });
+
+            // Dynamic QR code generation (run once at init)
+            var qrImg = document.querySelector('#share-modal img[src*="flip7-qr"]');
+            if (qrImg && typeof qrcode !== 'undefined') {
+                var qr = qrcode(0, 'M');
+                qr.addData('https://flip7scorecard.com?utm_source=share&utm_medium=qr_code');
+                qr.make();
+                qrImg.src = qr.createDataURL(8, 0);
+                qrImg.alt = 'Scan to open Flip 7 Scorecard';
+            }
         });
 
         function initializeNavbarScroll() {
@@ -214,6 +245,7 @@
                 // Select card
                 round.selectedCards.add(cardId);
                 cardElement.classList.add('selected');
+                trackEvent('card_select', { card_type: cardType, card_value: cardValue });
             }
 
             updateDisplay();
@@ -325,6 +357,7 @@
         function confirmAddPlayer() {
             const name = document.getElementById('add-player-input').value;
             addPlayer(name);
+            trackEvent('player_add', { player_count: gameState.players.length });
             closeAddPlayerModal();
         }
 
@@ -357,6 +390,7 @@
                     player.name = newName.trim();
                     updatePlayerStrip();
                     saveGameState();
+                    trackEvent('player_rename');
                 } else {
                     // If empty, keep the current name - just close modal
                 }
@@ -413,6 +447,7 @@
             updateRoundsDisplay();
             updatePlayerStrip();
             saveGameState();
+            trackEvent('player_remove', { player_count: gameState.players.length });
             closeRemovePlayerModal();
             window.currentMenuPlayerId = null;
         }
@@ -750,6 +785,8 @@
             updatePlayerStrip();
             saveGameState(); // Save state after banking
 
+            trackEvent('round_bank', { round_number: player.currentRound, round_score: round.score });
+
             // Show celebration AFTER updating displays and saving
             if (shouldCelebrate) {
                 showLeaderboard(player);
@@ -782,6 +819,8 @@
             updateRoundsDisplay();
             updatePlayerStrip();
             saveGameState(); // Save state after busting
+
+            trackEvent('round_bust', { round_number: player.currentRound });
 
             // Auto-advance to next round only if this is a new round
             if (player.currentRound === player.rounds.length) {
@@ -827,6 +866,7 @@
 
         function resetAllPlayers() {
             closeResetConfirmation();
+            trackEvent('game_reset', { reset_type: 'all' });
             
             // Reset all players' scores and rounds (keep the players themselves)
             gameState.players.forEach(player => {
@@ -859,6 +899,7 @@
 
         function resetActivePlayer() {
             closeResetConfirmation();
+            trackEvent('game_reset', { reset_type: 'active' });
             const player = getCurrentPlayer();
             
             if (!player) return;
@@ -888,6 +929,7 @@
 
         function resetEntireGame() {
             closeResetConfirmation();
+            trackEvent('game_reset', { reset_type: 'entire' });
             
             // Complete reset: remove all players and start fresh
             gameState.players = [{
@@ -923,6 +965,7 @@
             
             // If there's a winning player, show celebration announcement
             if (winningPlayer) {
+                trackEvent('game_complete');
                 const total = getPlayerTotal(winningPlayer);
                 document.getElementById('leaderboard-emoji').textContent = '🎉';
                 document.getElementById('leaderboard-title').textContent = 'Congratulations!';
@@ -1076,6 +1119,7 @@
 
         // Share modal functions
         function showShareModal() {
+            trackEvent('share_open');
             document.getElementById('share-modal').classList.remove('hidden');
         }
 
@@ -1084,20 +1128,21 @@
         }
 
         function copyLinkToClipboard() {
-            const url = window.location.href.split('?')[0]; // Get base URL without query params
+            var shareUrl = 'https://flip7scorecard.com?utm_source=share&utm_medium=copy_link';
             
             // Try modern clipboard API first
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(url)
+                navigator.clipboard.writeText(shareUrl)
                     .then(() => {
                         showSnackbar('Link copied to clipboard! 📋');
+                        trackEvent('share_copy_link');
                     })
                     .catch(err => {
                         console.error('Failed to copy:', err);
-                        fallbackCopyToClipboard(url);
+                        fallbackCopyToClipboard(shareUrl);
                     });
             } else {
-                fallbackCopyToClipboard(url);
+                fallbackCopyToClipboard(shareUrl);
             }
         }
 
@@ -1113,6 +1158,7 @@
             try {
                 document.execCommand('copy');
                 showSnackbar('Link copied to clipboard! 📋');
+                trackEvent('share_copy_link');
             } catch (err) {
                 console.error('Failed to copy:', err);
                 showSnackbar('Failed to copy link');
