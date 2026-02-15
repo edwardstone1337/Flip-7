@@ -94,7 +94,7 @@
         </a>
         <div class="nav-links">
           <a href="/" class="nav-link">Play</a>
-          <a href="/faq/" class="nav-link active">FAQ</a>
+          <a href="/faq/" class="nav-link active">Rules</a>
           <button class="nav-link share-button" onclick="showShareModal()">Share</button>
         </div>
       </div>
@@ -416,6 +416,21 @@
             </div>
           </div>
 
+          <!-- Feedback Section -->
+          <h2>Feedback</h2>
+          
+          <div class="accordion">
+            <button class="accordion-header" aria-expanded="false" aria-controls="faq22">
+              I have an idea or feedback about the Flip 7 Scorecard
+              <span class="accordion-icon">▼</span>
+            </button>
+            <div class="accordion-content" id="faq22">
+              <div class="accordion-body">
+                <p>We'd love to hear from you! <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Share your feedback here</a>.</p>
+              </div>
+            </div>
+          </div>
+
         </section>
       </main>
     </div>
@@ -540,6 +555,16 @@
             }
           });
         });
+
+        // Feedback link tracking (FAQ page)
+        var faqFeedbackLink = document.querySelector('.feedback-link');
+        if (faqFeedbackLink) {
+          faqFeedbackLink.addEventListener('click', function() {
+            if (typeof gtag === 'function') {
+              gtag('event', 'feedback_click', { location: 'faq' });
+            }
+          });
+        }
 
         // Close modal when clicking outside
         const modals = document.querySelectorAll('.celebration');

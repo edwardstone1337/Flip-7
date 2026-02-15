@@ -6,6 +6,21 @@ This design system is based on the "holy" card grid aesthetic, ensuring consiste
 
 ---
 
+## Border Tokens (CSS Variables)
+
+Design system uses semantic border tokens defined in `styles.css`:
+
+| Token | Value | Use |
+|-------|-------|-----|
+| `--border-default` | 1px solid Navy | Cards, buttons, modals, rounds |
+| `--border-subtle` | 1px solid Navy light | FAQ section dividers |
+| `--border-transparent` | 1px solid transparent | Nav/footer ghost links |
+| `--border-overlay` | 1px solid Navy | Modal content overlay |
+| `--border-accent` | 1px solid Orange | Selected modifier, winner button |
+| `--border-danger` | 1px solid Red | Danger variant |
+
+---
+
 ## Color Palette
 
 ### Primary Colors (from card grid)
@@ -337,4 +352,37 @@ animation: modalFadeInUp 0.35s cubic-bezier(0.23, 1, 0.32, 1);
 ---
 
 This design system ensures visual consistency while maintaining the playful, bold aesthetic of the Flip 7 card game.
+
+---
+
+## Border tokens
+
+Borders use a two-layer token architecture (primitives → semantic) defined in `:root` in `styles.css`.
+
+### Primitives
+| Token | Value |
+|-------|-------|
+| `--border-width-sm` | `1px` |
+| `--border-width-md` | `2px` (reserved, not currently used) |
+
+### Semantic
+| Token | Resolves to | Usage |
+|-------|-------------|-------|
+| `--border-default` | `1px solid var(--brand-navy)` | Cards, containers, buttons, inputs, rounds |
+| `--border-subtle` | `1px solid var(--brand-navy-light)` | Section dividers (FAQ h2) |
+| `--border-transparent` | `1px solid transparent` | Nav links, footer links (hover placeholder) |
+| `--border-overlay` | `1px solid var(--brand-navy)` | Modals (celebration-content) |
+| `--border-accent` | `1px solid var(--brand-orange)` | Selected modifier cards, winner button |
+| `--border-accent-light` | `1px solid var(--brand-orange-light)` | Reserved |
+| `--border-danger` | `1px solid var(--brand-red)` | Danger state overrides |
+
+### Usage
+Always use semantic tokens in component CSS. Never use raw `border: 1px solid ...`.
+```css
+/* ✅ Correct */
+.my-component { border: var(--border-default); }
+
+/* ❌ Incorrect */
+.my-component { border: 1px solid var(--brand-navy); }
+```
 

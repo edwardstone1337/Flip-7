@@ -261,26 +261,8 @@
       <div id="reset-modal" class="celebration hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">🔄</div>
-          <div class="celebration-text">Reset Options</div>
-          <div class="reset-options-container">
-            <div class="reset-option" onclick="resetActivePlayer()">
-              <div class="reset-option-title">Reset Active Player</div>
-              <div class="reset-option-desc">Clear rounds & scores for current player only</div>
-            </div>
-            <div class="reset-option" onclick="resetAllPlayers()">
-              <div class="reset-option-title">Reset All Scores</div>
-              <div class="reset-option-desc">Clear all players' rounds & scores (keeps names)</div>
-            </div>
-            <div class="reset-option danger" onclick="resetEntireGame()">
-              <div class="reset-option-title">Reset Entire Game</div>
-              <div class="reset-option-desc">Remove all players and start fresh</div>
-            </div>
-          </div>
-          <div class="modal-buttons">
-            <button onclick="closeResetConfirmation()" class="modal-button secondary full-width">
-              Cancel
-            </button>
-          </div>
+          <div class="celebration-text" id="reset-modal-title">Reset Options</div>
+          <div id="reset-modal-body"></div>
         </div>
       </div>
 
@@ -289,6 +271,15 @@
         <div class="celebration-content">
           <div class="celebration-emoji">🎉 </div>
           <div class="celebration-text">You hit 200 points!</div>
+          <div class="celebration-coffee" id="celebration-coffee-mini">
+            <div class="celebration-coffee-text">Enjoying the app? ☕</div>
+            <a href="https://www.buymeacoffee.com/edthedesigner" target="_blank" rel="noopener noreferrer" class="coffee-link">
+              <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=edthedesigner&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" class="celebration-coffee-img" />
+            </a>
+          </div>
+          <p class="modal-feedback-link">
+            <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
+          </p>
           <div class="modal-buttons">
             <button onclick="closeCelebration()" class="modal-button primary">
               Awesome!
@@ -317,7 +308,7 @@
       <div id="share-modal" class="celebration hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">📱</div>
-          <div class="celebration-text">Share Flip 7</div>
+          <div class="celebration-text">Share Flip 7 Score Calculator</div>
           <div class="qr-code-container">
             <img src="flip7-qr.png" alt="Flip 7 Scorecard QR code" style="width:200px;max-width:100%;height:auto;display:block;margin:0 auto;" />
           </div>
@@ -338,21 +329,9 @@
       <!-- Player Menu Modal -->
       <div id="player-menu-modal" class="celebration hidden">
         <div class="celebration-content">
+          <div class="celebration-emoji" id="player-menu-emoji"></div>
           <div class="celebration-text" id="player-menu-title">Player</div>
-          <div class="modal-buttons-vertical">
-            <button onclick="showRenamePlayerModal()" class="modal-button primary">
-              Rename Player
-            </button>
-            <button onclick="showResetPlayerConfirm()" class="modal-button secondary">
-              Reset This Player
-            </button>
-            <button onclick="showRemovePlayerConfirm()" class="modal-button danger">
-              Remove Player
-            </button>
-            <button onclick="closePlayerMenu()" class="modal-button secondary">
-              Cancel
-            </button>
-          </div>
+          <div id="player-menu-body"></div>
         </div>
       </div>
 
@@ -419,23 +398,6 @@
         </div>
       </div>
 
-      <!-- Reset Player Confirmation Modal -->
-      <div id="reset-player-modal" class="celebration hidden">
-        <div class="celebration-content">
-          <div class="celebration-emoji">🔄</div>
-          <div class="celebration-text">Reset <span id="reset-player-name"></span>?</div>
-          <div class="celebration-subtext">This will clear all rounds and scores for this player.</div>
-          <div class="modal-buttons">
-            <button onclick="closeResetPlayerModal()" class="modal-button secondary">
-              Cancel
-            </button>
-            <button onclick="confirmResetPlayer()" class="modal-button primary">
-              Reset Player
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- Leaderboard Modal -->
       <div id="leaderboard-modal" class="celebration hidden">
         <div class="celebration-content leaderboard-content">
@@ -463,6 +425,9 @@
               <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=edthedesigner&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" class="celebration-coffee-img" />
             </a>
           </div>
+          <p class="modal-feedback-link">
+            <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
+          </p>
           <div class="modal-buttons">
             <button onclick="closeLeaderboard()" class="modal-button primary">
               Close
@@ -487,7 +452,9 @@
     <footer class="site-footer">
       <div class="footer-nav">
         <a href="/" class="footer-link">Play</a>
-        <a href="/faq/" class="footer-link">FAQ & Rules</a>
+        <a href="/faq/" class="footer-link">Rules</a>
+        <button class="footer-link share-button" onclick="showShareModal()">Share</button>
+        <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="footer-link feedback-link">Feedback</a>
       </div>
       
       <div class="footer-description">

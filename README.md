@@ -19,23 +19,33 @@ A free, unofficial score tracker and rules reference for the Flip 7 card game. T
 
 ```
 Flip-7/
-├── index.html          # Main app (Play)
-├── faq.html            # Redirect to /faq/
+├── index.html              # Main app (Play)
+├── faq.html                # Redirect to /faq/
 ├── faq/
-│   └── index.html      # Rules & FAQ page
-├── script.js           # Game logic, state, UI
-├── styles.css          # All styles
+│   └── index.html          # Rules & FAQ page
+├── script.js               # Game logic, state, UI
+├── styles.css              # All styles
+├── package.json            # Playwright + serve (dev only)
+├── playwright.config.js    # E2E test config
+├── tests/
+│   └── game.spec.js        # Playwright E2E test suite
 ├── favicon.png
-├── flip7-qr.png        # QR code for Share modal
 ├── flip7logo.png
 ├── robots.txt
 ├── sitemap.xml
-├── CNAME               # flip7scorecard.com (GitHub Pages custom domain)
+├── CNAME                   # flip7scorecard.com (GitHub Pages)
+├── .gitignore              # node_modules, test artifacts
 ├── .github/
 │   └── workflows/
-│       └── update-sitemap.yml   # Auto-update sitemap lastmod on push/release
-└── UI-DESIGN-SYSTEM.md
+│       ├── update-sitemap.yml  # Auto-update sitemap lastmod
+│       └── e2e.yml             # Playwright E2E tests on PR/push
+├── UI-DESIGN-SYSTEM.md
+├── TRACKING.md
+├── CHANGELOG.md
+└── CTO-ROLE.md
 ```
+
+QR code in Share modal is client-generated (qrcode-generator CDN); no static QR image.
 
 ---
 
@@ -55,6 +65,32 @@ Then open `http://localhost:8000`. The app uses relative paths and works offline
 
 ---
 
+## Running tests
+
+The project uses [Playwright](https://playwright.dev/) for end-to-end testing.
+
+### Setup (one-time)
+```bash
+npm install
+npx playwright install chromium
+```
+
+### Run tests
+```bash
+npm test                 # Headless (CI default)
+npm run test:headed      # Watch in browser
+npm run test:ui          # Playwright UI mode
+```
+
+Tests run automatically on PRs and pushes to `main` via GitHub Actions (`.github/workflows/e2e.yml`). Failures block merging.
+
+### Test coverage
+The suite covers: game load, card selection, bank, bust, Flip 7 detection, round navigation, 200-point celebration, add/remove player, single and multi-player rename, and all reset flows.
+
+See `tests/game.spec.js` for the full suite. Each test starts with a clean `localStorage` and fresh page load.
+
+---
+
 ## Key features
 
 - **Multiplayer score tracking:** Add/remove players, rename, switch active player via a player strip.
@@ -64,8 +100,9 @@ Then open `http://localhost:8000`. The app uses relative paths and works offline
 - **Bank:** Bank current round’s score and advance to the next round.
 - **Round navigation:** Prev/Next and “View Rounds” list; jump to any round; total score across rounds.
 - **Game summary:** Leaderboard modal with standings; 200-point celebration and optional Buy Me a Coffee CTA.
-- **Reset options:** Reset active player, all scores, or entire game (with confirmations).
+- **Reset options:** Context-aware — single player sees a simple "New Game?" confirmation; multiple players see "New Game" (keep players, clear scores) and "Start Fresh" (remove all players).
 - **Share:** Modal with QR code and “Copy Link” (link only; no multiplayer sync).
+- **Feedback:** Hotjar survey link in footer, celebration modal, and leaderboard modal.
 - **Persistence:** Game state saved to `localStorage` and restored on load (with v1→v2 migration).
 - **Rules/FAQ page:** `/faq/` with rules, Flip 7 bonus, bust, solo mode, plus FAQPage structured data for SEO.
 
@@ -77,11 +114,13 @@ Then open `http://localhost:8000`. The app uses relative paths and works offline
 |------------|--------|
 | **Google Fonts** | Bebas Neue, Overpass |
 | **Google Analytics** | `G-EWP1726FBR` (gtag.js) |
-| **Hotjar** | Tracking (hjid: 6441765) |
-| **Buy Me a Coffee** | Button image from `img.buymeacoffee.com` (slug: edthedesigner); linked in footer and leaderboard modal |
+| **Hotjar** | Tracking (hjid: 6441765), feedback survey |
+| **qrcode-generator** | CDN: cdnjs.cloudflare.com — client-side QR in Share modal |
+| **Buy Me a Coffee** | Button image from `img.buymeacoffee.com` (slug: edthedesigner); footer, leaderboard, celebration modals |
 | **Shared footer** | See below |
+| **Playwright** | E2E testing (dev only) — `@playwright/test` via npm |
 
-No other CDN scripts or CSS; no npm/Node build.
+No npm/Node build; static HTML/CSS/JS.
 
 ---
 

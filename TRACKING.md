@@ -10,7 +10,8 @@ Google Analytics is set up with measurement ID **G-EWP1726FBR** on both the main
 
 | Event Name | Trigger | Parameters | File & Function |
 |------------|---------|------------|-----------------|
-| `coffee_click` | Buy Me a Coffee link clicked | `location`: `'footer'` or `'leaderboard'` | script.js — DOMContentLoaded listener |
+| `coffee_click` | Buy Me a Coffee link clicked | `location`: `'footer'`, `'celebration'`, or `'leaderboard'` | script.js — DOMContentLoaded listener |
+| `feedback_click` | Feedback (Hotjar survey) link clicked | `location`: `'footer'`, `'celebration'`, `'leaderboard'`, or `'faq'` | script.js / faq/index.html — DOMContentLoaded |
 | `share_open` | Share button clicked | — | script.js — showShareModal() |
 | `share_copy_link` | Copy Link button in share modal | — | script.js — copyLinkToClipboard() |
 | `round_bank` | Player banks a round | `round_number`, `round_score` | script.js — bankRound() |
@@ -19,8 +20,8 @@ Google Analytics is set up with measurement ID **G-EWP1726FBR** on both the main
 | `card_select` | Card selected (not deselected) | `card_type`, `card_value` | script.js — toggleCard() |
 | `player_add` | Player added | `player_count` | script.js — confirmAddPlayer() |
 | `player_remove` | Player removed | `player_count` | script.js — confirmRemovePlayer() |
-| `player_rename` | Player renamed | — | script.js — confirmRenamePlayer() |
-| `game_reset` | Any reset action | `reset_type`: `'active'`, `'all'`, or `'entire'` | script.js — resetActivePlayer(), resetAllPlayers(), resetEntireGame() |
+| `player_rename` | Player renamed | — | script.js — confirmRenamePlayer() (2+ players), confirmInlineRename() (single player) |
+| `game_reset` | Any reset action | `reset_type`: `'all'` or `'entire'` | script.js — resetAllPlayersAndClose(), resetEntireGameAndClose() |
 | `nav_click` | Nav or footer link clicked | `destination` | script.js — DOMContentLoaded listener |
 | `faq_accordion_open` | FAQ accordion expanded | `faq_id` | faq/index.html — inline script |
 
@@ -31,7 +32,8 @@ Google Analytics is set up with measurement ID **G-EWP1726FBR** on both the main
 - **Guard:** All events use the `trackEvent()` helper (or in FAQ, a direct `typeof gtag === 'function'` check), so tracking never runs if `gtag` is not defined.
 - **Timing:** Events fire only after the action succeeds (e.g. after bank/bust/remove/rename/reset), never before.
 - **card_select:** Fires only when a card is **selected**; deselection does not send an event.
-- **coffee_click:** Location is derived by checking if the link is inside `#celebration-coffee` → `'leaderboard'`, otherwise `'footer'`.
+- **coffee_click:** Location: `#celebration-coffee-mini` → `'celebration'`, `#celebration-coffee` → `'leaderboard'`, else `'footer'`.
+- **feedback_click:** Location: `#celebration-modal` → `'celebration'`, `#leaderboard-modal` → `'leaderboard'`, FAQ page → `'faq'`, else `'footer'`.
 - **FAQ:** Uses a direct `gtag('event', 'faq_accordion_open', { faq_id: ... })` in the accordion click handler, with the same `typeof gtag === 'function'` guard, because the FAQ page uses an inline script and does not load `script.js`.
 
 ---

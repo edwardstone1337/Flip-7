@@ -8,6 +8,20 @@
   --brand-orange-light: #fbcf8a;
   --brand-red: #e53e3e;
   --brand-red-hover: #c53030;
+
+  /* Border tokens — Primitives */
+  --border-width-sm: 1px;
+  --border-width-md: 2px;
+
+  /* Border tokens — Semantic */
+  --border-default: var(--border-width-sm) solid var(--brand-navy);
+  --border-subtle: var(--border-width-sm) solid var(--brand-navy-light);
+  --border-transparent: var(--border-width-sm) solid transparent;
+  --border-overlay: var(--border-width-sm) solid var(--brand-navy);
+  --border-accent: var(--border-width-sm) solid var(--brand-orange);
+  --border-accent-light: var(--border-width-sm) solid var(--brand-orange-light);
+  --border-danger: var(--border-width-sm) solid var(--brand-red);
+
   --font-display: "Bebas Neue", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
   --font-body: "Overpass", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -31,8 +45,8 @@ body {
 .app-container {
   background-color: var(--brand-cream);
   max-width: 400px;
-  padding: 16px;
-  border: 4px solid var(--brand-navy);
+  padding: 0 16px 16px 16px;
+  border: var(--border-default);
   border-radius: 16px;
   margin: 0px auto;
 }
@@ -68,7 +82,7 @@ body {
 }
 
 .nav-button {
-  border: 1px solid var(--brand-navy);
+  border: var(--border-default);
   color: var(--brand-navy);
   border-radius: 8px;
   padding: 8px 12px;
@@ -85,6 +99,13 @@ body {
 .nav-button:disabled {
   opacity: 0;
   cursor: not-allowed;
+}
+
+#next-round,
+#prev-round {
+  border-width: 0;
+  border-color: transparent;
+  border-image: none;
 }
 
 .round-indicator {
@@ -177,7 +198,7 @@ body {
 /* Base card styles */
 .card {
   aspect-ratio: 3/4;
-  border: 1px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   background: var(--brand-cream);
   display: flex;
@@ -239,7 +260,7 @@ body {
 .card.modifier.selected {
   background: var(--brand-orange-light);
   color: var(--brand-navy);
-  border: var(--brand-orange);
+  border: var(--border-accent);
 }
 
 .card.modifier.selected .card-label {
@@ -285,14 +306,16 @@ body {
 /* Player Strip Styles */
 .player-strip-container {
   margin-bottom: 16px;
-  overflow: hidden;
+  overflow: visible;
+  padding-top: 6px; /* room for chip hover lift + shadow */
 }
 
 .player-strip {
+  box-sizing: content-box;
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 4px 0;
+  padding: 8px 0; /* vertical padding so chip hover lift + shadow aren't clipped */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   /* Hide scrollbar for Chrome, Safari and Opera */
@@ -311,7 +334,7 @@ body {
   gap: 8px;
   padding: 8px 12px;
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 24px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -405,7 +428,7 @@ body {
   padding: 8px 16px;
   background: var(--brand-cream);
   color: var(--brand-navy);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 24px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -444,7 +467,7 @@ body {
 
 .toggle-rounds-button {
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   color: var(--brand-navy);
   border-radius: 8px;
   padding: 12px 24px;
@@ -468,7 +491,7 @@ body {
 
 .rounds-section {
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   padding: 20px;
   margin-top: 16px;
@@ -496,7 +519,7 @@ body {
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 2px solid var(--brand-navy);
+  border-bottom: var(--border-default);
 }
 
 .rounds-title {
@@ -522,7 +545,7 @@ body {
   padding: 12px 16px;
   margin-bottom: 8px;
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -535,7 +558,7 @@ body {
 
 .round-item.current {
   background: var(--brand-navy);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
 }
 
 .round-item.current .round-number,
@@ -596,7 +619,7 @@ body {
   background: var(--brand-cream);
   padding: 32px;
   border-radius: 16px;
-  border: 4px solid var(--brand-navy);
+  border: var(--border-overlay);
   text-align: center;
   animation: modalFadeInUp 0.35s cubic-bezier(0.23, 1, 0.32, 1);
   max-width: 90%;
@@ -626,7 +649,7 @@ body {
 /* Standardized Button System - Matching Card Grid Aesthetic */
 .modal-button {
   padding: 12px 24px;
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
@@ -651,7 +674,7 @@ body {
 .modal-button.primary {
   background: var(--brand-cream);
   color: var(--brand-navy);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
 }
 
 .modal-button.primary:hover {
@@ -663,7 +686,7 @@ body {
 .modal-button.secondary {
   background: var(--brand-cream);
   color: var(--brand-navy);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
 }
 
 .modal-button.secondary:hover {
@@ -710,7 +733,7 @@ body {
 .player-input {
   width: 100%;
   padding: 14px;
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   font-size: 16px;
   font-family: var(--font-body);
@@ -744,7 +767,7 @@ body {
 .reset-option {
   padding: 16px;
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -789,6 +812,14 @@ body {
   font-size: 13px;
   color: #718096;
   line-height: 1.4;
+  font-family: var(--font-body);
+}
+
+.reset-modal-description {
+  font-size: 14px;
+  color: #718096;
+  line-height: 1.5;
+  margin: 16px 0 24px;
   font-family: var(--font-body);
 }
 
@@ -894,7 +925,7 @@ body {
 .winner-continue-button {
   background: var(--brand-orange);
   color: var(--brand-navy);
-  border: 2px solid var(--brand-orange);
+  border: var(--border-accent);
   border-radius: 8px;
   padding: 14px 28px;
   font-weight: bold;
@@ -956,14 +987,14 @@ body {
   gap: 12px;
   padding: 14px;
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .leaderboard-item.active-player {
   background: var(--brand-navy);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
 }
 
 .leaderboard-item.active-player .leaderboard-name,
@@ -1068,13 +1099,13 @@ body {
 .rounds-footer {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 2px solid var(--brand-navy);
+  border-top: var(--border-default);
 }
 
 /* Summary Button - Ghost Style */
 .summary-button {
   background: var(--brand-cream);
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
   color: var(--brand-navy);
   border-radius: 8px;
   padding: 12px 24px;
@@ -1211,7 +1242,7 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 16px;
+  gap: 8px;
 }
 
 /* Desktop layout - center navigation buttons */
@@ -1236,7 +1267,7 @@ body {
   border-radius: 8px;
   transition: all 0.2s ease;
   font-family: var(--font-body);
-  border: 2px solid transparent;
+  border: var(--border-transparent);
 }
 
 .nav-link:hover {
@@ -1253,7 +1284,7 @@ body {
 /* Share button styles */
 .share-button {
   background: none;
-  border: 2px solid transparent;
+  border: var(--border-transparent);
   cursor: pointer;
   font-family: var(--font-body);
   font-size: 18px;
@@ -1267,6 +1298,20 @@ body {
 .share-button:hover {
   background-color: var(--brand-navy-light);
   border-color: var(--brand-navy);
+}
+
+.site-footer .share-button {
+  color: var(--brand-cream);
+}
+
+.site-footer .feedback-link {
+  color: var(--brand-cream);
+  text-decoration: none;
+}
+
+.site-footer .feedback-link:hover {
+  text-decoration: underline;
+  color: var(--brand-orange-light);
 }
 
 /* QR Code container styles */
@@ -1349,7 +1394,7 @@ body {
   font-size: 24px;
   margin: 32px 0 16px 0;
   padding-top: 16px;
-  border-top: 2px solid var(--brand-navy-light);
+  border-top: var(--border-subtle);
 }
 
 .faq-section h3 {
@@ -1391,7 +1436,7 @@ body {
   padding: 24px 16px;
   border-radius: 16px;
   text-align: center;
-  border: 2px solid var(--brand-navy);
+  border: var(--border-default);
 }
 
 .footer-nav {
@@ -1408,7 +1453,7 @@ body {
   border-radius: 6px;
   transition: all 0.2s ease;
   font-family: var(--font-body);
-  border: 1px solid transparent;
+  border: var(--border-transparent);
 }
 
 .footer-link:hover {
@@ -1445,6 +1490,32 @@ body {
 .footer-disclaimer a:hover {
   text-decoration: underline;
   color: var(--brand-orange);
+}
+
+/* Feedback survey links */
+.feedback-link {
+  color: var(--brand-orange-light);
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.feedback-link:hover {
+  color: var(--brand-orange);
+}
+
+.celebration-content .feedback-link {
+  color: var(--brand-navy);
+}
+
+.celebration-content .feedback-link:hover {
+  color: var(--brand-teal);
+}
+
+.modal-feedback-link {
+  text-align: center;
+  margin: 8px 0 4px;
+  font-size: 0.85rem;
 }
 
 /* Coffee Button Styles */
@@ -1498,13 +1569,13 @@ body {
   font-size: 24px;
   margin: 32px 0 16px 0;
   padding-top: 16px;
-  border-top: 2px solid var(--brand-navy-light);
+  border-top: var(--border-subtle);
   text-align: center;
 }
 
 .accordion {
   background-color: var(--brand-cream);
-  border: 1px solid var(--brand-navy);
+  border: var(--border-default);
   border-radius: 8px;
   margin-bottom: 12px;
   overflow: hidden;
