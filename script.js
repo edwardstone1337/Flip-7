@@ -826,7 +826,7 @@
             updatePlayerStrip();
             saveGameState(); // Save state after banking
 
-            trackEvent('round_bank', { round_number: player.currentRound, round_score: round.score });
+            trackEvent('round_bank', { round_number: player.currentRound, round_score: round.score, player_count: gameState.players.length });
 
             // Show celebration AFTER updating displays and saving
             if (shouldCelebrate) {
@@ -939,7 +939,7 @@
 
         function resetAllPlayersAndClose() {
             closeResetConfirmation();
-            trackEvent('game_reset', { reset_type: 'all' });
+            trackEvent('game_reset', { reset_type: 'all', player_count: gameState.players.length });
             gameState.players.forEach(player => {
                 player.rounds = [{
                     round: 1,
@@ -965,7 +965,7 @@
 
         function resetEntireGameAndClose() {
             closeResetConfirmation();
-            trackEvent('game_reset', { reset_type: 'entire' });
+            trackEvent('game_reset', { reset_type: 'entire', player_count: gameState.players.length });
             gameState.players = [{
                 id: 'p1',
                 name: 'Player 1',
