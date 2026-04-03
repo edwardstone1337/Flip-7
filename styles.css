@@ -141,6 +141,7 @@ body {
   font-size: 14px;
   color: #718096;
   margin-bottom: 0px;
+  display: none;
 }
 
 .realtime-score {
@@ -1658,4 +1659,53 @@ body {
 .accordion-body strong {
   font-weight: bold;
   color: var(--brand-navy);
+}
+
+/* ── Mobile compact layout (≤479px) ─────────────────────────────────────────
+   Reduces vertical height so the banked score + full card grid are visible
+   without scrolling on common small phones (iPhone SE, etc).
+   No tap-target sizes or min-heights are altered below 44px.
+   ─────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 479px) {
+  .app-container-wrapper {
+    padding: 8px 16px;
+  }
+
+  .app-header {
+    margin-bottom: 8px;
+  }
+
+  .player-strip-container {
+    padding-top: 2px;
+    margin-bottom: 8px;
+  }
+
+  .banked-score {
+    font-size: 96px;
+    min-height: 72px;
+    height: auto;
+    margin-bottom: 8px;
+  }
+
+  .realtime-score,
+  .realtime-label,
+  .score-details {
+    display: none;
+  }
+
+  .round-navigation {
+    margin-bottom: 4px;
+  }
+
+  .round-indicator {
+    font-size: 14px;
+  }
+
+  .modifier-row {
+    margin-bottom: 4px;
+  }
+
+  .number-grid {
+    gap: 5px;
+  }
 }
