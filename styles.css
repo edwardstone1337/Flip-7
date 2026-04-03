@@ -145,38 +145,37 @@ body {
 }
 
 .realtime-score {
-  font-size: 24px;
+  font-size: 14px;
   font-weight: bold;
   color: var(--brand-navy);
   margin-bottom: 8px;
   font-family: var(--font-display);
+  white-space: nowrap;
 }
 
 .realtime-label {
   font-size: 12px;
   color: #718096;
   margin-bottom: 12px;
+  display: none;
 }
 
 .score-details {
   font-size: 14px;
   color: #718096;
   margin-bottom: 12px;
+  display: none;
 }
 
 .status-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  font-size: 12px;
-  font-weight: bold;
+  display: none;
 }
 
 .flip7-indicator {
   color: #38a169;
 }
 
-.bust-indicator {
+.x2-indicator {
   color: #e53e3e;
 }
 
@@ -1687,7 +1686,6 @@ body {
     margin-bottom: 8px;
   }
 
-  .realtime-score,
   .realtime-label,
   .score-details {
     display: none;

@@ -562,7 +562,8 @@
                 return {
                     score: 0,
                     breakdown: 'Duplicate number cards - BUST!',
-                    isFlip7: false
+                    isFlip7: false,
+                    hasX2: false
                 };
             }
 
@@ -606,7 +607,8 @@
             return {
                 score: finalScore,
                 breakdown: breakdown,
-                isFlip7: isFlip7
+                isFlip7: isFlip7,
+                hasX2: hasX2
             };
         }
 
@@ -662,12 +664,11 @@
 
             // Update displays
             document.getElementById('banked-score').textContent = bankedScore;
-            document.getElementById('realtime-score').textContent = realtimeTotal;
+            let realtimeLabel = `Real-time Score: ${realtimeTotal}`;
+            if (result.hasX2) realtimeLabel += ' · ×2';
+            if (result.isFlip7) realtimeLabel += ' · +15 (Flip 7 Bonus!)';
+            document.getElementById('realtime-score').textContent = realtimeLabel;
             document.getElementById('score-breakdown').textContent = result.breakdown;
-
-            // Update status indicators
-            const flip7Status = document.getElementById('flip7-status');
-            flip7Status.classList.toggle('hidden', !result.isFlip7);
 
             // Update bank button
             const bankButton = document.getElementById('bank-button');

@@ -85,7 +85,7 @@ test('2. Select cards and score updates in real time', async ({ page }) => {
   await selectNumber(page, 10);
   await selectNumber(page, 11);
   await selectNumber(page, 12);
-  await expect(page.locator('#realtime-score')).toHaveText('33');
+  await expect(page.locator('#realtime-score')).toHaveText('Real-time Score: 33');
   await expect(page.locator('.card.selected')).toHaveCount(3);
 });
 
