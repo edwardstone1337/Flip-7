@@ -563,12 +563,15 @@
                     score: 0,
                     breakdown: 'Duplicate number cards - BUST!',
                     isFlip7: false,
-                    hasX2: false
+                    hasX2: false,
+                    numberSum: 0,
+                    modifierBonus: 0
                 };
             }
 
             // Calculate base score from number cards
             let numberScore = numberCards.reduce((sum, num) => sum + num, 0);
+            const numberSum = numberScore;
 
             // Check for Flip 7 bonus
             const isFlip7 = numberCards.length === 7;
@@ -608,7 +611,9 @@
                 score: finalScore,
                 breakdown: breakdown,
                 isFlip7: isFlip7,
-                hasX2: hasX2
+                hasX2: hasX2,
+                numberSum: numberSum,
+                modifierBonus: modifierBonus
             };
         }
 
@@ -664,9 +669,37 @@
 
             // Update displays
             document.getElementById('banked-score').textContent = bankedScore;
-            let realtimeLabel = `Real-time Score: ${realtimeTotal}`;
-            if (result.hasX2) realtimeLabel += ' · ×2';
-            if (result.isFlip7) realtimeLabel += ' · +15 (Flip 7 Bonus!)';
+            let realtimeLabel;
+            if (round.selectedCards.size === 0) {
+                realtimeLabel = 'Select cards to score';
+            } else if (round.busted) {
+                realtimeLabel = 'Bust! 0 points';
+            } else {
+                const { score: finalScore, numberSum, hasX2, isFlip7, modifierBonus } = result;
+                const hasAdditionsAfterX2 = isFlip7 || modifierBonus > 0;
+                const isSimple = !hasX2 && !isFlip7 && modifierBonus === 0;
+                const projectedTotal = bankedScore + finalScore;
+                if (isSimple) {
+                    realtimeLabel = bankedScore > 0
+                        ? `If you bank: ${finalScore} → ${projectedTotal} total`
+                        : `If you bank: ${finalScore}`;
+                } else {
+                    let math;
+                    if (hasX2 && hasAdditionsAfterX2) {
+                        math = `(${numberSum} ×2)`;
+                    } else if (hasX2) {
+                        math = `${numberSum} ×2`;
+                    } else {
+                        math = `${numberSum}`;
+                    }
+                    if (isFlip7) math += ' + 15 Flip 7 Bonus';
+                    if (modifierBonus > 0) math += ` + ${modifierBonus}`;
+                    math += ` = ${finalScore}`;
+                    realtimeLabel = bankedScore > 0
+                        ? `If you bank: ${math} → ${projectedTotal} total`
+                        : `If you bank: ${math}`;
+                }
+            }
             document.getElementById('realtime-score').textContent = realtimeLabel;
             document.getElementById('score-breakdown').textContent = result.breakdown;
 
@@ -904,20 +937,20 @@
             const bodyEl = document.getElementById('reset-modal-body');
 
             if (isSinglePlayer) {
-                titleEl.textContent = 'New Game?';
+                titleEl.textContent = 'Reset Game?';
                 bodyEl.innerHTML = `
-            <div class="reset-modal-description">This will clear all your scores and rounds.</div>
+            <div class="reset-modal-description">This will clear all scores and rounds.</div>
             <div class="modal-buttons">
                 <button onclick="closeResetConfirmation()" class="modal-button secondary">Cancel</button>
-                <button onclick="resetAllPlayersAndClose()" class="modal-button primary">New Game</button>
+                <button onclick="resetAllPlayersAndClose()" class="modal-button danger">Reset Game</button>
             </div>
         `;
             } else {
-                titleEl.textContent = 'Reset Options';
+                titleEl.textContent = 'Reset Game';
                 bodyEl.innerHTML = `
             <div class="reset-options-container">
                 <div class="reset-option" onclick="resetAllPlayersAndClose()">
-                    <div class="reset-option-title">New Game</div>
+                    <div class="reset-option-title">Reset Scores</div>
                     <div class="reset-option-desc">Clear all scores and rounds, keep all players</div>
                 </div>
                 <div class="reset-option danger" onclick="resetEntireGameAndClose()">

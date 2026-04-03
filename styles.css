@@ -150,7 +150,8 @@ body {
   color: var(--brand-navy);
   margin-bottom: 8px;
   font-family: var(--font-display);
-  white-space: nowrap;
+  line-height: 1.3;
+  opacity: 0.6;
 }
 
 .realtime-label {
@@ -788,12 +789,12 @@ body {
 }
 
 .reset-option.danger {
-  background: var(--brand-cream);
+  background: var(--brand-red);
   border-color: var(--brand-red);
 }
 
 .reset-option.danger:hover {
-  background: #ffe5e5;
+  background: var(--brand-red-hover);
 }
 
 .reset-option-title {
@@ -805,7 +806,11 @@ body {
 }
 
 .reset-option.danger .reset-option-title {
-  color: var(--brand-red);
+  color: white;
+}
+
+.reset-option.danger .reset-option-desc {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .reset-option-desc {

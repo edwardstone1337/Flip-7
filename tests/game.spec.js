@@ -85,7 +85,7 @@ test('2. Select cards and score updates in real time', async ({ page }) => {
   await selectNumber(page, 10);
   await selectNumber(page, 11);
   await selectNumber(page, 12);
-  await expect(page.locator('#realtime-score')).toHaveText('Real-time Score: 33');
+  await expect(page.locator('#realtime-score')).toHaveText('If you bank: 33');
   await expect(page.locator('.card.selected')).toHaveCount(3);
 });
 
@@ -155,17 +155,17 @@ test('9. Player menu — multi-player shows menu options', async ({ page }) => {
 test('10. Reset modal — single player confirmation', async ({ page }) => {
   await playAndBankRound(page, [10, 11, 12]);
   await page.locator('.reset-button').click();
-  await expect(page.locator('#reset-modal-title')).toHaveText('New Game?', { timeout: 5000 });
-  await page.getByRole('button', { name: 'New Game' }).click();
+  await expect(page.locator('#reset-modal-title')).toHaveText('Reset Game?', { timeout: 5000 });
+  await page.locator('#reset-modal-body').getByRole('button', { name: 'Reset Game' }).click();
   await expect(page.locator('#banked-score')).toContainText('0');
 });
 
 test('11. Reset modal — multi-player options', async ({ page }) => {
   await addPlayer(page);
   await page.locator('.reset-button').click();
-  await expect(page.getByText('New Game')).toBeVisible({ timeout: 5000 });
+  await expect(page.getByText('Reset Scores')).toBeVisible({ timeout: 5000 });
   await expect(page.getByText('Start Fresh')).toBeVisible();
-  await page.locator('.reset-option').filter({ hasText: 'New Game' }).click();
+  await page.locator('.reset-option').filter({ hasText: 'Reset Scores' }).click();
   await expect(page.locator('#banked-score')).toContainText('0');
   await expect(page.locator('.player-chip')).toHaveCount(2);
 });
