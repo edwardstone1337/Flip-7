@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Three-layer design token architecture (131 CSS custom properties)
+- Primitive tokens: color, gray scale, spacing, border-radius, typography, shadows, motion
+- Semantic tokens: background, text, shadow, border-radius including on-dark variants
+- Complete UI-DESIGN-SYSTEM.md reference documentation
+
+### Changed
+- All component CSS migrated from --brand-* to semantic token references
+- Border token definitions now reference --color-* primitives
+- Confetti colors in script.js now read from CSS custom properties via getComputedStyle
+- .card.selected shadow changed from blue to navy
+- .winner-announcement border-radius snapped from 12px to 16px
+- .footer-link, .celebration-coffee-img border-radius snapped from 6px to 8px
+
+### Removed
+- All --brand-* legacy token declarations
+
 ## Unreleased
 
 ### Added

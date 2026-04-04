@@ -1067,8 +1067,15 @@
         function createConfetti() {
             const confettiContainer = document.getElementById('confetti-container');
             confettiContainer.innerHTML = '';
-            
-            const colors = ['#fbb03a', '#fbcf8a', '#1d9995', '#2b3276', '#fff4d2'];
+
+            const style = getComputedStyle(document.documentElement);
+            const colors = [
+                style.getPropertyValue('--color-orange').trim(),
+                style.getPropertyValue('--color-orange-light').trim(),
+                style.getPropertyValue('--color-teal').trim(),
+                style.getPropertyValue('--color-navy').trim(),
+                style.getPropertyValue('--color-cream').trim()
+            ];
             const confettiCount = 50;
             
             for (let i = 0; i < confettiCount; i++) {

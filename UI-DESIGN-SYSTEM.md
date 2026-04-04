@@ -1,388 +1,204 @@
-# Flip 7 - UI Design System
+# Flip 7 — UI Design System
 
-## Design Principles
+## Architecture
 
-This design system is based on the "holy" card grid aesthetic, ensuring consistency across all UI elements while keeping the core gameplay interface untouched.
+Three-layer token system implemented as CSS custom properties in `styles.css`:
 
----
+- **Primitives** (`--color-*`, `--space-*`, `--radius-*`, `--font-size-*`, `--shadow-*`, `--duration-*`) — raw values named by what they ARE. Never referenced directly in component CSS.
+- **Semantic** (`--bg-*`, `--text-*`, `--border-*`, `--shadow-hover`, etc.) — intent-based tokens named by what they DO. This is what component CSS references.
+- **Component** — not yet needed at our scale. Semantic tokens suffice.
 
-## Border Tokens (CSS Variables)
-
-Design system uses semantic border tokens defined in `styles.css`:
-
-| Token | Value | Use |
-|-------|-------|-----|
-| `--border-default` | 1px solid Navy | Cards, buttons, modals, rounds |
-| `--border-subtle` | 1px solid Navy light | FAQ section dividers |
-| `--border-transparent` | 1px solid transparent | Nav/footer ghost links |
-| `--border-overlay` | 1px solid Navy | Modal content overlay |
-| `--border-accent` | 1px solid Orange | Selected modifier, winner button |
-| `--border-danger` | 1px solid Red | Danger variant |
+Rule: component selectors reference ONLY semantic tokens or, for borders, the `--border-*` shorthand tokens.
 
 ---
 
-## Color Palette
+## Color Primitives
 
-### Primary Colors (from card grid)
-- **Navy** `#2b3276` - Primary text and borders
-- **Teal** `#1d9995` - Primary action (Bank button)
-- **Cream** `#fff4d2` - Background color
-- **Red** `#e53e3e` - Danger actions (Bust button)
-- **Orange** `#fbb03a` - Accents and highlights
+### Brand
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-navy` | `#2b3276` | Primary brand color |
+| `--color-navy-light` | `rgba(43, 50, 118, 0.1)` | Light tint for hover states |
+| `--color-teal` | `#1d9995` | Primary action color |
+| `--color-cream` | `#fff4d2` | Surface/background color |
+| `--color-orange` | `#fbb03a` | Accent/highlight |
+| `--color-orange-light` | `#fbcf8a` | Secondary accent |
+| `--color-red` | `#e53e3e` | Danger/destructive |
+| `--color-red-dark` | `#c53030` | Danger hover |
+| `--color-green` | `#38a169` | Success/positive |
+| `--color-white` | `#ffffff` | — |
+| `--color-black` | `#000000` | — |
 
-### Supporting Colors
-- **Navy Light** `rgba(43, 50, 118, 0.1)` - Hover states
-- **Orange Light** `#fbcf8a` - Secondary accents
-- **Gray** `#718096` - Secondary text
-
----
-
-## Button System
-
-### 1. Primary Buttons (Ghost Style)
-**Use for:** Main actions, confirmations (Add, Save, Close)
-
-**Style:**
-- Background: Cream `#fff4d2`
-- Text: Navy `#2b3276`
-- Border: 2px solid Navy
-- Border radius: 8px
-- Min height: 48px
-
-**Hover:**
-- Background: Navy `#2b3276`
-- Text: Cream `#fff4d2`
-- Transform: translateY(-2px)
-- Box shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-
-**Examples:**
-- "Add" in Add Player modal
-- "Save" in Rename Player modal
-- "Close" in modals
-- "Game Summary" button
-- "+ Add player" chip
-
-**Note:** Bank button uses teal but is in the protected holy section
-
-### 2. Secondary Buttons
-**Use for:** Less prominent actions, cancellations
-
-**Style:**
-- Background: Cream `#fff4d2`
-- Text: Navy `#2b3276`
-- Border: 2px solid Navy
-- Border radius: 8px
-- Min height: 48px
-
-**Hover:**
-- Background: Navy light `rgba(43, 50, 118, 0.1)`
-- Transform: translateY(-2px)
-- Box shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-
-**Examples:**
-- "Cancel" buttons
-- "View Rounds" toggle button
-
-**Note:** Primary and Secondary now share similar styling, with Primary having a more pronounced hover (full navy) vs Secondary (navy light)
-
-### 3. Danger Buttons
-**Use for:** Destructive actions only
-
-**Style:**
-- Background: Red `#e53e3e`
-- Text: White
-- Border: None
-- Border radius: 8px
-- Min height: 48px
-
-**Hover:**
-- Background: Darker red `#c53030`
-- Transform: translateY(-2px)
-- Box shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-
-**Examples:**
-- Bust button (card grid - holy, don't touch)
-- "Restart Game" button
-- "Remove Player" option in player menu
-- "Reset Entire Game" option
+### Gray Scale (Tailwind v1)
+| Token | Value |
+|-------|-------|
+| `--color-gray-100` | `#f7fafc` |
+| `--color-gray-200` | `#edf2f7` |
+| `--color-gray-300` | `#e2e8f0` |
+| `--color-gray-400` | `#cbd5e0` |
+| `--color-gray-500` | `#a0aec0` |
+| `--color-gray-600` | `#718096` |
+| `--color-gray-700` | `#4a5568` |
+| `--color-gray-800` | `#2d3748` |
+| `--color-gray-900` | `#1a202c` |
 
 ---
 
-## Modal System
+## Semantic Tokens — Background
 
-### Modal Container
-- Background: Semi-transparent black `rgba(0, 0, 0, 0.8)`
-- z-index: 1000
-- Full viewport overlay
+| Token | Resolves to | Usage |
+|-------|-------------|-------|
+| `--bg-primary` | cream | App background |
+| `--bg-surface` | cream | Cards, chips, buttons, inputs at rest |
+| `--bg-body` | teal | Body element background |
+| `--bg-muted` | gray-200 | Unselected/inactive card backgrounds |
+| `--bg-disabled` | gray-300 | Disabled elements |
+| `--bg-overlay` | `rgba(0,0,0,0.8)` | Modal/celebration overlays |
+| `--bg-hover-light` | navy-light | Light hover tint on ghost buttons |
+| `--bg-action-primary` | teal | Bank button, primary actions |
+| `--bg-action-navy` | navy | Active nav, inverted hover fills, footer |
+| `--bg-action-danger` | red | Bust, reset, danger actions |
+| `--bg-action-danger-hover` | red-dark | Hover on danger elements |
+| `--bg-accent` | orange | Accent backgrounds |
+| `--bg-accent-light` | orange-light | Secondary accent backgrounds |
+| `--bg-on-dark-subtle` | `rgba(255,255,255,0.05)` | Subtle surface on dark containers |
+| `--bg-on-dark-hover` | `rgba(255,255,255,0.1)` | Hover on dark containers |
 
-### Modal Content
-- Background: Cream `#fff4d2`
-- Border: 4px solid Navy `#2b3276`
-- Border radius: 16px
-- Padding: 32px
-- Max width: 90% of viewport
-- Width: 400px (desktop)
-- Animation: Fade in + slide up
+## Semantic Tokens — Text
 
-### Modal Typography
-- **Title** (celebration-text): 24px, bold, Navy
-- **Emoji**: 48px
-- **Description text**: 13-14px, gray `#718096`
+| Token | Resolves to | Usage |
+|-------|-------------|-------|
+| `--text-primary` | navy | Default text on light backgrounds |
+| `--text-secondary` | gray-600 | Helper/secondary text |
+| `--text-muted` | gray-700 | De-emphasised text |
+| `--text-disabled` | gray-500 | Disabled element text |
+| `--text-placeholder` | gray-500 | Input placeholders |
+| `--text-on-dark` | cream | Text on dark backgrounds |
+| `--text-on-action` | cream | Text on teal/navy/red action buttons |
+| `--text-on-action-muted` | `rgba(255,255,255,0.85)` | Secondary text on action backgrounds |
+| `--text-on-dark-muted` | `rgba(255,255,255,0.8)` | Secondary text on dark containers |
+| `--text-success` | green | Success indicators |
+| `--text-danger` | red | Danger/warning text |
+| `--text-accent` | orange | Accent text (winner, scores) |
+| `--text-accent-light` | orange-light | Secondary accent text |
+| `--text-action-primary` | teal | Teal text for scores and links |
 
-### Modal Buttons
-- Use standard button system (Primary/Secondary/Danger)
-- Display: flex with gap: 12px
-- Full width on vertical layouts
+## Semantic Tokens — Shadows
 
----
+| Token | Resolves to | Usage |
+|-------|-------------|-------|
+| `--shadow-hover` | `0 4px 12px rgba(0,0,0,0.15)` | Standard hover lift |
+| `--shadow-hover-subtle` | `0 4px 12px rgba(0,0,0,0.1)` | Subtle hover lift |
+| `--shadow-selected` | `0 6px 16px rgba(43,50,118,0.4)` | Selected card state |
+| `--shadow-focus` | `0 2px 8px rgba(29,153,149,0.2)` | Input focus ring |
+| `--shadow-elevated` | `0 4px 12px rgba(0,0,0,0.3)` | Snackbar, elevated surfaces |
+| `--shadow-accent-hover` | `0 4px 12px rgba(251,176,58,0.4)` | Winner button hover |
 
-## Input Fields
+## Semantic Tokens — Border Radius
 
-### Text Inputs (player names, etc.)
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy `#2b3276`
-- Border radius: 8px
-- Padding: 14px
-- Font: 16px, semi-bold (600)
-- Color: Navy
-
-**Focus State:**
-- Border: Teal `#1d9995`
-- Box shadow: 0 2px 8px rgba(29, 153, 149, 0.2)
-
-**Placeholder:**
-- Color: Light gray `#a0aec0`
-- Font weight: 400
-
----
-
-## Card-Style Options
-
-### Reset Options Cards
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy `#2b3276`
-- Border radius: 8px
-- Padding: 16px
-- Min height: 70px
-- Display: flex column, centered
-
-**Hover:**
-- Transform: translateY(-2px)
-- Box shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-
-**Danger Variant:**
-- Border color: Red `#e53e3e`
-- Title color: Red
-- Hover background: Light red `#ffe5e5`
-
-### Leaderboard Items
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy
-- Border radius: 8px
-- Padding: 14px
-
-**Active Player:**
-- Background: Navy `#2b3276`
-- Text: Cream `#fff4d2`
-- Score: Orange `#fbb03a`
+| Token | Resolves to | Usage |
+|-------|-------------|-------|
+| `--radius-card` | 8px | Cards |
+| `--radius-button` | 8px | Buttons, inputs |
+| `--radius-container` | 16px | App container, modals |
+| `--radius-chip` | 24px | Player chips, pills |
+| `--radius-circle` | 50% | Avatars, initials |
 
 ---
 
-## Rounds Section
+## Border Tokens
 
-### Container
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy
-- Border radius: 8px
-- Padding: 20px
+Shorthand tokens combining width + style + color:
 
-### Header
-- Border bottom: 2px solid Navy
-- Title: Uppercase, bold, Navy
-- Total score: Display font, Teal
-
-### Round Items
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy
-- Border radius: 8px
-- Padding: 12px 16px
-- Margin bottom: 8px
-
-**Current Round:**
-- Background: Navy
-- Text: Cream
-- Score: Orange
-
-**Hover:**
-- Transform: translateY(-2px)
-- Box shadow: 0 4px 12px
-
-### Footer
-- Border top: 2px solid Navy
-- Contains "View Game Summary" button (Primary style)
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--border-default` | `1px solid navy` | Cards, buttons, inputs |
+| `--border-subtle` | `1px solid navy-light` | Dividers, FAQ sections |
+| `--border-transparent` | `1px solid transparent` | Ghost nav/footer links |
+| `--border-overlay` | `1px solid navy` | Modal content |
+| `--border-accent` | `1px solid orange` | Selected modifier, winner |
+| `--border-accent-light` | `1px solid orange-light` | — |
+| `--border-danger` | `1px solid red` | Danger variant |
 
 ---
 
-## Player Strip
+## Spacing Scale (8-point base)
 
-### Player Chips
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy
-- Border radius: 24px (pill shape)
-- Min height: 44px (thumb-friendly)
-- Padding: 8px 12px
+| Token | Value |
+|-------|-------|
+| `--space-1` | 2px |
+| `--space-2` | 4px |
+| `--space-3` | 8px |
+| `--space-4` | 12px |
+| `--space-5` | 16px |
+| `--space-6` | 20px |
+| `--space-7` | 24px |
+| `--space-8` | 32px |
 
-**Active State:**
-- Background: Navy
-- Text: Cream
-- Initials background: Orange
-
-**Hover:**
-- Transform: translateY(-2px)
-- Box shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-
-### Add Player Chip
-- Background: Cream `#fff4d2`
-- Border: 2px solid Navy
-- Text: Navy
-
-**Hover:**
-- Background: Navy
-- Text: Cream
-
-**Disabled (Max players):**
-- Background: Light gray `#e2e8f0`
-- Text: Medium gray `#a0aec0`
-- No hover effect
+Off-grid values (intentionally hardcoded): `14px`, `28px`, `56px` (nav offset), `6px` (tight spacing), `30px`.
 
 ---
 
-## Consistency Rules
+## Typography
 
-### DO ✅
-- Use 8px border radius for all buttons and cards
-- Use 2px borders consistently
-- Apply translateY(-2px) on hover for interactive elements
-- Use min-height: 48px for all buttons (accessibility)
-- Keep Navy as primary text color
-- Use ghost style (navy border, cream bg) for most buttons
-- Reserve Red only for destructive actions
-- Use Cream for all backgrounds (no white except in holy section)
-- Keep Teal as accent color (text, borders, small elements)
+### Font Families
+| Token | Stack |
+|-------|-------|
+| `--font-display` | Bebas Neue + system fallbacks |
+| `--font-body` | Overpass + system fallbacks |
 
-### DON'T ❌
-- Mix different border radius values
-- Use thin borders (< 2px)
-- Apply red color to non-destructive actions
-- Create buttons smaller than 44px height
-- Use multiple shades of the same color
-- Modify the card grid (Bank, Bust, numbers, modifiers)
-- Use white backgrounds outside the holy section (creates jarring contrast)
+### Font Size Scale
+`--font-size-2xs` (8px) → `--font-size-xs` (10px) → `--font-size-sm` (12px) → `--font-size-md` (14px) → `--font-size-base` (16px) → `--font-size-lg` (18px) → `--font-size-xl` (20px) → `--font-size-2xl` (24px) → `--font-size-3xl` (32px) → `--font-size-4xl` (36px) → `--font-size-5xl` (72px) → `--font-size-hero` (160px)
 
----
+Off-scale values (intentionally hardcoded): `13px`, `28px`, `40px`, `48px`, `96px`, `0.85rem`.
 
-## Spacing System
+### Font Weights
+`--font-weight-normal` (400) · `--font-weight-semibold` (600) · `--font-weight-bold` (700) · `--font-weight-extrabold` (800)
 
-- **Small gap**: 8px
-- **Medium gap**: 12px
-- **Large gap**: 16px
-- **Section spacing**: 24px
-- **Modal padding**: 32px
+### Line Heights
+`--line-height-tight` (1) · `--line-height-snug` (1.2) · `--line-height-relaxed` (1.4) · `--line-height-loose` (1.5) · `--line-height-normal` (1.6)
+
+Off-scale value: `1.3` (one-off on `.realtime-score`).
+
+### Letter Spacing
+`--letter-spacing-normal` (0.5px) · `--letter-spacing-wide` (1px)
 
 ---
 
-## Animation Standards
+## Motion
 
-### Hover Transitions
-```css
-transition: all 0.2s ease;
-```
-
-### Hover Transform
-```css
-transform: translateY(-2px);
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-```
-
-### Active State
-```css
-transform: translateY(0);
-```
-
-### Modal Entry
-```css
-animation: modalFadeInUp 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-```
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--duration-fast` | 0.2s | Standard interactions |
+| `--duration-medium` | 0.3s | Larger transitions |
+| `--easing-default` | ease | General purpose |
+| `--easing-bounce` | `cubic-bezier(0.68, -0.55, 0.265, 1.55)` | Playful pop effects |
+| `--easing-smooth` | `cubic-bezier(0.23, 1, 0.32, 1)` | Modal entrances |
+| `--transition-fast` | `all 0.2s ease` | Common hover/state transitions |
+| `--transition-medium` | `all 0.3s ease` | Slide/expand transitions |
 
 ---
 
-## Accessibility
+## Button Hover Treatments
 
-- All interactive elements ≥ 44px tap target
-- Focus states with visible borders
-- Color contrast ratios meet WCAG AA
-- aria-live regions for score updates
-- Keyboard navigation support
+| Group | Behaviour | Tokens used | Selectors |
+|-------|-----------|-------------|-----------|
+| **A — Navy fill invert** | bg→navy, text→cream | `--bg-action-navy`, `--text-on-action` | `.summary-button:hover`, `.modal-button.primary:hover`, `.add-player-chip:hover` |
+| **B — Light tint** | bg→navy-light | `--bg-hover-light` | `.toggle-rounds-button:hover`, `.modal-button.secondary:hover`, `.nav-link:hover`, `.share-button:hover` |
+| **C — Danger** | bg→red-dark | `--bg-action-danger-hover` | `.reset-button:hover`, `.modal-button.danger:hover`, `.reset-option.danger:hover`, `.card.action.bust:hover` |
+| **D — Lift only** | translateY(-2px) + shadow | `--shadow-hover` | `.card:hover`, `.player-chip:hover`, `.reset-option:hover` |
+| **E — Accent** | bg→orange-light | `--bg-accent-light`, `--shadow-accent-hover` | `.winner-continue-button:hover` |
+
+### Known gaps (to address in UX polish)
+- `.card.action.primary:hover` (Bank) — hover bg identical to resting state, no visual feedback
+- `.nav-button:hover` (Prev/Next) — no hover rule exists
 
 ---
 
-## Component Checklist
+## Protected Zones (Do Not Modify)
 
-✅ **Standardized:**
-- Modal buttons (Primary, Secondary, Danger)
-- Reset options cards
-- Player input fields
-- Leaderboard items
-- Toggle rounds button
-- Summary button
-- Restart button (Danger style)
-- Player strip chips
-- Modal containers
-- Rounds section container
-- Round items
-- Rounds header and footer
-
-🔒 **Protected (Don't Touch):**
-- Number cards (0-12)
+- Number cards (0–12)
 - Modifier cards (×2, +2, +4, +6, +8, +10)
 - Bank button (✓)
 - Bust button (X)
 - Card grid layout
-
----
-
-This design system ensures visual consistency while maintaining the playful, bold aesthetic of the Flip 7 card game.
-
----
-
-## Border tokens
-
-Borders use a two-layer token architecture (primitives → semantic) defined in `:root` in `styles.css`.
-
-### Primitives
-| Token | Value |
-|-------|-------|
-| `--border-width-sm` | `1px` |
-| `--border-width-md` | `2px` (reserved, not currently used) |
-
-### Semantic
-| Token | Resolves to | Usage |
-|-------|-------------|-------|
-| `--border-default` | `1px solid var(--brand-navy)` | Cards, containers, buttons, inputs, rounds |
-| `--border-subtle` | `1px solid var(--brand-navy-light)` | Section dividers (FAQ h2) |
-| `--border-transparent` | `1px solid transparent` | Nav links, footer links (hover placeholder) |
-| `--border-overlay` | `1px solid var(--brand-navy)` | Modals (celebration-content) |
-| `--border-accent` | `1px solid var(--brand-orange)` | Selected modifier cards, winner button |
-| `--border-accent-light` | `1px solid var(--brand-orange-light)` | Reserved |
-| `--border-danger` | `1px solid var(--brand-red)` | Danger state overrides |
-
-### Usage
-Always use semantic tokens in component CSS. Never use raw `border: 1px solid ...`.
-```css
-/* ✅ Correct */
-.my-component { border: var(--border-default); }
-
-/* ❌ Incorrect */
-.my-component { border: 1px solid var(--brand-navy); }
-```
-
