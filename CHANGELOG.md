@@ -6,18 +6,30 @@
 - Three-layer design token architecture (131 CSS custom properties)
 - Primitive tokens: color, gray scale, spacing, border-radius, typography, shadows, motion
 - Semantic tokens: background, text, shadow, border-radius including on-dark variants
+- Button atom system: .btn base with .btn-primary/.btn-secondary/.btn-danger + size variants
+- .busted utility class for round score styling
+- Keyboard accessibility for Bank and Bust action cards (role="button", tabindex, keydown)
+- --line-height-relaxed (1.4) and --line-height-loose (1.5) typography tokens
 - Complete UI-DESIGN-SYSTEM.md reference documentation
 
 ### Changed
 - All component CSS migrated from --brand-* to semantic token references
 - Border token definitions now reference --color-* primitives
 - Confetti colors in script.js now read from CSS custom properties via getComputedStyle
+- Modal base class renamed from .celebration to .modal-overlay
+- Game Summary button now uses btn-primary (navy bg — was cream)
+- Busted round score now uses .busted class instead of inline style
 - .card.selected shadow changed from blue to navy
 - .winner-announcement border-radius snapped from 12px to 16px
 - .footer-link, .celebration-coffee-img border-radius snapped from 6px to 8px
+- All 27 buttons now compose from .btn atom classes
 
 ### Removed
 - All --brand-* legacy token declarations
+- 22 hover rules from non-card interactive elements (mobile-first decision)
+- 14 orphaned transition declarations
+- 6 orphaned :active rules
+- ~65 lines of redundant per-selector button CSS
 
 ## Unreleased
 

@@ -187,6 +187,91 @@
   --radius-circle: var(--radius-full);
 }
 
+/* ==========================================
+   ATOM: Button (.btn)
+   Base class + size/intent variants.
+   All buttons share: radius, cursor, font,
+   border, transition, display, alignment,
+   min touch-target height (48px).
+   Hover states intentionally omitted —
+   mobile-first product (78% touch users).
+   ========================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  text-align: center;
+  text-decoration: none;
+  border: var(--border-default);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+/* Intent variants */
+
+.btn-primary {
+  background: var(--bg-action-navy);
+  color: var(--text-on-action);
+  border: var(--border-default);
+}
+
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: var(--border-default);
+}
+
+.btn-danger {
+  background: var(--bg-action-danger);
+  color: var(--text-on-action);
+  border: none;
+}
+
+/* Size variants */
+
+.btn-lg {
+  padding: var(--space-4) var(--space-7);
+  font-size: var(--font-size-base);
+}
+
+.btn-sm {
+  padding: var(--space-3) var(--space-5);
+  min-height: auto;
+}
+
+/* Full-width modifier */
+
+.btn-full {
+  width: 100%;
+}
+
+/* ==========================================
+   ATOM: Busted state (.busted)
+   Applied to round-score elements when a
+   round has been busted. Replaces the inline
+   style in updateRoundsDisplay().
+   ========================================== */
+
+.busted {
+  color: var(--text-danger);
+  text-decoration: line-through;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -238,17 +323,6 @@ body {
   align-items: center;
   gap: var(--space-5);
   margin-bottom: var(--space-3);
-}
-
-.nav-button {
-  border: var(--border-default);
-  color: var(--text-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-weight: var(--font-weight-bold);
-  background-color: var(--bg-surface);
 }
 
 
@@ -500,14 +574,8 @@ body {
   border: var(--border-default);
   border-radius: var(--radius-xl);
   cursor: pointer;
-  transition: var(--transition-fast);
   min-height: 44px;
   flex-shrink: 0;
-}
-
-.player-chip:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
 }
 
 .player-chip.active {
@@ -573,15 +641,10 @@ body {
   cursor: pointer;
   padding: var(--space-2);
   line-height: var(--line-height-tight);
-  transition: transform var(--duration-fast) var(--easing-default);
 }
 
 .player-chip.active .player-menu-btn {
   color: var(--text-on-action);
-}
-
-.player-menu-btn:hover {
-  transform: scale(1.2);
 }
 
 .add-player-chip {
@@ -594,20 +657,11 @@ body {
   border: var(--border-default);
   border-radius: var(--radius-xl);
   cursor: pointer;
-  transition: var(--transition-fast);
   min-height: 44px;
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-md);
   white-space: nowrap;
   flex-shrink: 0;
-}
-
-.add-player-chip:hover {
-  background: var(--bg-action-navy);
-  color: var(--text-on-action);
-  border-color: var(--color-navy);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
 }
 
 .add-player-chip.disabled {
@@ -617,40 +671,12 @@ body {
   cursor: not-allowed;
 }
 
-.add-player-chip.disabled:hover {
-  transform: none;
-  box-shadow: none;
-}
-
 /* Toggle Rounds Button - Matching Secondary Button Style */
 .toggle-rounds-container {
   margin-top: var(--space-5);
   text-align: center;
 }
 
-.toggle-rounds-button {
-  background: var(--bg-surface);
-  border: var(--border-default);
-  color: var(--text-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-4) var(--space-7);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  font-size: var(--font-size-md);
-  transition: var(--transition-fast);
-  width: 100%;
-  min-height: 48px;
-}
-
-.toggle-rounds-button:hover {
-  background: var(--bg-hover-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.toggle-rounds-button:active {
-  transform: translateY(0);
-}
 
 .rounds-section {
   background: var(--bg-surface);
@@ -711,12 +737,6 @@ body {
   border: var(--border-default);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.round-item:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover-subtle);
 }
 
 .round-item.current {
@@ -763,7 +783,7 @@ body {
   font-family: var(--font-display);
 }
 
-.celebration,
+.modal-overlay,
 .error-modal {
   position: fixed;
   top: 0;
@@ -809,67 +829,6 @@ body {
   justify-content: center;
 }
 
-/* Standardized Button System - Matching Card Grid Aesthetic */
-.modal-button {
-  padding: var(--space-4) var(--space-7);
-  border: var(--border-default);
-  border-radius: var(--radius-md);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  font-family: var(--font-body);
-  font-size: var(--font-size-base);
-  transition: var(--transition-fast);
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  min-height: 48px;
-}
-
-.modal-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.modal-button:active {
-  transform: translateY(0);
-}
-
-/* Primary - Ghost style (navy stroke, cream background) */
-.modal-button.primary {
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  border: var(--border-default);
-}
-
-.modal-button.primary:hover {
-  background: var(--bg-action-navy);
-  color: var(--text-on-action);
-}
-
-/* Secondary - Matches neutral cards */
-.modal-button.secondary {
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  border: var(--border-default);
-}
-
-.modal-button.secondary:hover {
-  background: var(--bg-hover-light);
-}
-
-/* Danger - Matches Bust button style */
-.modal-button.danger {
-  background: var(--bg-action-danger);
-  color: var(--text-on-action);
-  border: none;
-}
-
-.modal-button.danger:hover {
-  background: var(--bg-action-danger-hover);
-}
-
-.modal-button.full-width {
-  width: 100%;
-}
 
 /* Modal Buttons Vertical Layout */
 .modal-buttons-vertical {
@@ -880,9 +839,6 @@ body {
   width: 100%;
 }
 
-.modal-buttons-vertical .modal-button {
-  width: 100%;
-}
 
 /* Celebration Subtext */
 .celebration-subtext {
@@ -933,7 +889,6 @@ body {
   border: var(--border-default);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: var(--transition-fast);
   text-align: left;
   min-height: 70px;
   display: flex;
@@ -941,22 +896,9 @@ body {
   justify-content: center;
 }
 
-.reset-option:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.reset-option:active {
-  transform: translateY(0);
-}
-
 .reset-option.danger {
   background: var(--bg-action-danger);
   border-color: var(--color-red);
-}
-
-.reset-option.danger:hover {
-  background: var(--bg-action-danger-hover);
 }
 
 .reset-option-title {
@@ -1093,28 +1035,8 @@ body {
   background: var(--bg-accent);
   color: var(--text-primary);
   border: var(--border-accent);
-  border-radius: var(--radius-md);
-  padding: 14px 28px;
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  font-family: var(--font-body);
-  font-size: var(--font-size-lg);
-  transition: var(--transition-fast);
   margin: var(--space-3) auto 0;
-  width: 100%;
   max-width: 280px;
-  display: block;
-}
-
-.winner-continue-button:hover {
-  background: var(--bg-accent-light);
-  border-color: var(--color-orange-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-accent-hover);
-}
-
-.winner-continue-button:active {
-  transform: translateY(0);
 }
 
 /* Leaderboard Styles */
@@ -1224,11 +1146,6 @@ body {
 .coffee-link {
   display: inline-block;
   text-decoration: none;
-  transition: transform var(--duration-fast) var(--easing-default);
-}
-
-.coffee-link:hover {
-  transform: scale(1.05);
 }
 
 .celebration-coffee-img {
@@ -1269,31 +1186,6 @@ body {
   border-top: var(--border-default);
 }
 
-/* Summary Button - Ghost Style */
-.summary-button {
-  background: var(--bg-surface);
-  border: var(--border-default);
-  color: var(--text-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-4) var(--space-7);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  font-size: var(--font-size-md);
-  transition: var(--transition-fast);
-  width: 100%;
-  min-height: 48px;
-}
-
-.summary-button:hover {
-  background: var(--bg-action-navy);
-  color: var(--text-on-action);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.summary-button:active {
-  transform: translateY(0);
-}
 
 /* Action Buttons Container */
 .action-buttons-container {
@@ -1314,30 +1206,6 @@ body {
   width: 100%;
 }
 
-/* Reset Button - Danger Style */
-.reset-button {
-  background: var(--bg-action-danger);
-  border: none;
-  color: var(--text-on-action);
-  border-radius: var(--radius-md);
-  padding: var(--space-4) var(--space-7);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  font-size: var(--font-size-md);
-  transition: var(--transition-fast);
-  width: 100%;
-  min-height: 48px;
-}
-
-.reset-button:hover {
-  background: var(--bg-action-danger-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.reset-button:active {
-  transform: translateY(0);
-}
 
 /* Top Navigation Styles */
 .top-nav {
@@ -1432,14 +1300,8 @@ body {
   font-size: var(--font-size-lg);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-md);
-  transition: var(--transition-fast);
   font-family: var(--font-body);
   border: var(--border-transparent);
-}
-
-.nav-link:hover {
-  background-color: var(--bg-hover-light);
-  border-color: var(--color-navy);
 }
 
 .nav-link.active {
@@ -1459,12 +1321,6 @@ body {
   color: var(--text-primary);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-md);
-  transition: var(--transition-fast);
-}
-
-.share-button:hover {
-  background-color: var(--bg-hover-light);
-  border-color: var(--color-navy);
 }
 
 .site-footer .share-button {
@@ -1474,11 +1330,6 @@ body {
 .site-footer .feedback-link {
   color: var(--text-on-action);
   text-decoration: none;
-}
-
-.site-footer .feedback-link:hover {
-  text-decoration: underline;
-  color: var(--text-accent-light);
 }
 
 /* QR Code container styles */
@@ -1618,14 +1469,8 @@ body {
   padding: var(--space-3) var(--space-4);
   margin: 0 var(--space-3);
   border-radius: var(--radius-md);
-  transition: var(--transition-fast);
   font-family: var(--font-body);
   border: var(--border-transparent);
-}
-
-.footer-link:hover {
-  background-color: var(--bg-on-dark-hover);
-  border-color: var(--color-cream);
 }
 
 .footer-description {
@@ -1664,19 +1509,10 @@ body {
   color: var(--text-accent-light);
   text-decoration: underline;
   font-weight: var(--font-weight-semibold);
-  transition: color var(--duration-fast) var(--easing-default);
-}
-
-.feedback-link:hover {
-  color: var(--text-accent);
 }
 
 .celebration-content .feedback-link {
   color: var(--text-primary);
-}
-
-.celebration-content .feedback-link:hover {
-  color: var(--text-action-primary);
 }
 
 .modal-feedback-link {

@@ -119,14 +119,14 @@
       <!-- Round Navigation -->
       <div class="round-navigation">
         <button
-          class="nav-button"
+          class="btn btn-secondary btn-sm nav-button"
           id="prev-round"
           onclick="goToPreviousRound()"
         >
           ← Prev
         </button>
         <div class="round-indicator" id="round-indicator">ROUND 1</div>
-        <button class="nav-button" id="next-round" onclick="goToNextRound()">
+        <button class="btn btn-secondary btn-sm nav-button" id="next-round" onclick="goToNextRound()">
           Next →
         </button>
       </div>
@@ -201,7 +201,7 @@
           9
           <div class="card-label">Nine</div>
         </div>
-        <div class="card action bust" onclick="bustRound()">
+        <div class="card action bust" role="button" tabindex="0" onclick="bustRound()">
           X
           <div class="card-label">Bust</div>
         </div>
@@ -217,7 +217,7 @@
           12
           <div class="card-label">Twelve</div>
         </div>
-        <div class="card action primary" id="bank-button" onclick="bankRound()">
+        <div class="card action primary" id="bank-button" role="button" tabindex="0" onclick="bankRound()">
           ✓
           <div class="card-label">Bank</div>
         </div>
@@ -225,7 +225,7 @@
 
       <!-- Toggle Rounds Button -->
       <div class="toggle-rounds-container">
-        <button class="toggle-rounds-button" id="toggle-rounds-btn" onclick="toggleRoundsSection()">
+        <button class="btn btn-secondary toggle-rounds-button" id="toggle-rounds-btn" onclick="toggleRoundsSection()">
           View Rounds
         </button>
       </div>
@@ -249,16 +249,16 @@
 
       <!-- Action Buttons -->
       <div class="action-buttons-container">
-        <button class="summary-button" onclick="showLeaderboard()">
+        <button class="btn btn-primary summary-button" onclick="showLeaderboard()">
           Game Summary
         </button>
-        <button class="reset-button" onclick="showResetConfirmation()">
+        <button class="btn btn-danger reset-button" onclick="showResetConfirmation()">
           Reset Game
         </button>
       </div>
 
       <!-- Reset Confirmation Modal -->
-      <div id="reset-modal" class="celebration hidden">
+      <div id="reset-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">🔄</div>
           <div class="celebration-text" id="reset-modal-title">Reset Options</div>
@@ -267,7 +267,7 @@
       </div>
 
       <!-- Celebration Modal -->
-      <div id="celebration-modal" class="celebration hidden">
+      <div id="celebration-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">🎉 </div>
           <div class="celebration-text">You hit 200 points!</div>
@@ -281,7 +281,7 @@
             <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
           </p>
           <div class="modal-buttons">
-            <button onclick="closeCelebration()" class="modal-button primary">
+            <button onclick="closeCelebration()" class="btn btn-lg btn-primary modal-button primary">
               Awesome!
             </button>
           </div>
@@ -289,15 +289,15 @@
       </div>
 
       <!-- Error Modal -->
-      <div id="error-modal" class="celebration hidden">
+      <div id="error-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">⚠️</div>
           <div class="celebration-text" id="error-message"></div>
           <div class="modal-buttons">
-            <button onclick="closeError()" class="modal-button secondary">
+            <button onclick="closeError()" class="btn btn-lg btn-secondary modal-button secondary">
               Cancel
             </button>
-            <button id="error-action-button" onclick="bankAndCloseError()" class="modal-button primary">
+            <button id="error-action-button" onclick="bankAndCloseError()" class="btn btn-lg btn-primary modal-button primary">
               Bank it
             </button>
           </div>
@@ -305,7 +305,7 @@
       </div>
 
       <!-- Share QR Code Modal -->
-      <div id="share-modal" class="celebration hidden">
+      <div id="share-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">📱</div>
           <div class="celebration-text">Share Flip 7 Score Calculator</div>
@@ -313,10 +313,10 @@
             <img src="flip7-qr.png" alt="Flip 7 Scorecard QR code" style="width:200px;max-width:100%;height:auto;display:block;margin:0 auto;" />
           </div>
           <div class="modal-buttons">
-            <button onclick="copyLinkToClipboard()" class="modal-button primary">
+            <button onclick="copyLinkToClipboard()" class="btn btn-lg btn-primary modal-button primary">
               📋 Copy Link
             </button>
-            <button onclick="closeShareModal()" class="modal-button secondary">
+            <button onclick="closeShareModal()" class="btn btn-lg btn-secondary modal-button secondary">
               Close
             </button>
           </div>
@@ -327,7 +327,7 @@
       </div>
 
       <!-- Player Menu Modal -->
-      <div id="player-menu-modal" class="celebration hidden">
+      <div id="player-menu-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji" id="player-menu-emoji"></div>
           <div class="celebration-text" id="player-menu-title">Player</div>
@@ -336,7 +336,7 @@
       </div>
 
       <!-- Add Player Modal -->
-      <div id="add-player-modal" class="celebration hidden">
+      <div id="add-player-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">➕</div>
           <div class="celebration-text">Add New Player</div>
@@ -348,10 +348,10 @@
             maxlength="20"
           />
           <div class="modal-buttons">
-            <button onclick="closeAddPlayerModal()" class="modal-button secondary">
+            <button onclick="closeAddPlayerModal()" class="btn btn-lg btn-secondary modal-button secondary">
               Cancel
             </button>
-            <button onclick="confirmAddPlayer()" class="modal-button primary">
+            <button onclick="confirmAddPlayer()" class="btn btn-lg btn-primary modal-button primary">
               Add
             </button>
           </div>
@@ -359,7 +359,7 @@
       </div>
 
       <!-- Rename Player Modal -->
-      <div id="rename-player-modal" class="celebration hidden">
+      <div id="rename-player-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">✏️</div>
           <div class="celebration-text">Rename Player</div>
@@ -371,10 +371,10 @@
             maxlength="20"
           />
           <div class="modal-buttons">
-            <button onclick="closeRenamePlayerModal()" class="modal-button secondary">
+            <button onclick="closeRenamePlayerModal()" class="btn btn-lg btn-secondary modal-button secondary">
               Cancel
             </button>
-            <button onclick="confirmRenamePlayer()" class="modal-button primary">
+            <button onclick="confirmRenamePlayer()" class="btn btn-lg btn-primary modal-button primary">
               Save
             </button>
           </div>
@@ -382,16 +382,16 @@
       </div>
 
       <!-- Remove Player Confirmation Modal -->
-      <div id="remove-player-modal" class="celebration hidden">
+      <div id="remove-player-modal" class="modal-overlay hidden">
         <div class="celebration-content">
           <div class="celebration-emoji">⚠️</div>
           <div class="celebration-text">Remove <span id="remove-player-name"></span>?</div>
           <div class="celebration-subtext">This will permanently delete their rounds and scores.</div>
           <div class="modal-buttons">
-            <button onclick="closeRemovePlayerModal()" class="modal-button secondary">
+            <button onclick="closeRemovePlayerModal()" class="btn btn-lg btn-secondary modal-button secondary">
               Cancel
             </button>
-            <button onclick="confirmRemovePlayer()" class="modal-button danger">
+            <button onclick="confirmRemovePlayer()" class="btn btn-lg btn-danger modal-button danger">
               Remove Player
             </button>
           </div>
@@ -399,7 +399,7 @@
       </div>
 
       <!-- Leaderboard Modal -->
-      <div id="leaderboard-modal" class="celebration hidden">
+      <div id="leaderboard-modal" class="modal-overlay hidden">
         <div class="celebration-content leaderboard-content">
           <div class="confetti-container" id="confetti-container"></div>
           <div class="celebration-emoji" id="leaderboard-emoji">🎉</div>
@@ -409,7 +409,7 @@
             <div class="winner-score-label">scored</div>
             <div class="winner-score" id="winner-score"></div>
             <div class="winner-message">200 points reached! 🎯</div>
-            <button onclick="closeLeaderboard()" class="modal-button winner-continue-button">
+            <button onclick="closeLeaderboard()" class="btn btn-lg modal-button winner-continue-button">
               Continue Playing
             </button>
           </div>
@@ -429,7 +429,7 @@
             <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
           </p>
           <div class="modal-buttons">
-            <button onclick="closeLeaderboard()" class="modal-button primary">
+            <button onclick="closeLeaderboard()" class="btn btn-lg btn-primary modal-button primary">
               Close
             </button>
           </div>

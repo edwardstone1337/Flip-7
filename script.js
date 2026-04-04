@@ -235,6 +235,16 @@
                     toggleCard(this);
                 });
             });
+
+            // Keyboard support for action cards (Bank/Bust)
+            document.querySelectorAll('.card.action[role="button"]').forEach(card => {
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
         }
 
         function toggleCard(cardElement) {
@@ -371,8 +381,8 @@
                 value="${player.name.replace(/"/g, '&quot;')}"
             />
             <div class="modal-buttons">
-                <button onclick="closePlayerMenu()" class="modal-button secondary">Cancel</button>
-                <button onclick="confirmInlineRename()" class="modal-button primary">Save</button>
+                <button onclick="closePlayerMenu()" class="btn btn-lg btn-secondary modal-button secondary">Cancel</button>
+                <button onclick="confirmInlineRename()" class="btn btn-lg btn-primary modal-button primary">Save</button>
             </div>
         `;
                 document.getElementById('player-menu-modal').classList.remove('hidden');
@@ -393,9 +403,9 @@
                 titleEl.textContent = player.name;
                 bodyEl.innerHTML = `
             <div class="modal-buttons-vertical">
-                <button onclick="showRenamePlayerModal()" class="modal-button primary">Rename Player</button>
-                <button onclick="showRemovePlayerConfirm()" class="modal-button danger">Remove Player</button>
-                <button onclick="closePlayerMenu()" class="modal-button secondary">Cancel</button>
+                <button onclick="showRenamePlayerModal()" class="btn btn-lg btn-primary modal-button primary">Rename Player</button>
+                <button onclick="showRemovePlayerConfirm()" class="btn btn-lg btn-danger modal-button danger">Remove Player</button>
+                <button onclick="closePlayerMenu()" class="btn btn-lg btn-secondary modal-button secondary">Cancel</button>
             </div>
         `;
                 document.getElementById('player-menu-modal').classList.remove('hidden');
@@ -924,7 +934,7 @@
                                     : 'Not played yet'
                         }</div>
                     </div>
-                    <div class="round-score" style="${round.busted ? 'color: #e53e3e; text-decoration: line-through;' : ''}">${
+                    <div class="round-score${round.busted ? ' busted' : ''}">${
                         round.saved ? (round.busted ? '0' : round.score) : '—'
                     }</div>
                 </div>
@@ -941,8 +951,8 @@
                 bodyEl.innerHTML = `
             <div class="reset-modal-description">This will clear all scores and rounds.</div>
             <div class="modal-buttons">
-                <button onclick="closeResetConfirmation()" class="modal-button secondary">Cancel</button>
-                <button onclick="resetAllPlayersAndClose()" class="modal-button danger">Reset Game</button>
+                <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary modal-button secondary">Cancel</button>
+                <button onclick="resetAllPlayersAndClose()" class="btn btn-lg btn-danger modal-button danger">Reset Game</button>
             </div>
         `;
             } else {
@@ -959,7 +969,7 @@
                 </div>
             </div>
             <div class="modal-buttons">
-                <button onclick="closeResetConfirmation()" class="modal-button secondary full-width">Cancel</button>
+                <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary btn-full modal-button secondary full-width">Cancel</button>
             </div>
         `;
             }

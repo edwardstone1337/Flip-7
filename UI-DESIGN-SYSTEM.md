@@ -202,3 +202,72 @@ Off-scale value: `1.3` (one-off on `.realtime-score`).
 - Bank button (✓)
 - Bust button (X)
 - Card grid layout
+
+---
+
+## Button Atoms
+
+Mobile-first button system. Hover states intentionally omitted (78% mobile users).
+
+### Base class: `.btn`
+All interactive buttons MUST include `.btn` as their base class. It provides:
+touch-target sizing (48px min-height), padding, font, border, radius, cursor, full-width layout.
+
+### Intent variants (mutually exclusive)
+| Class | Background | Text | Border | Use for |
+|-------|-----------|------|--------|---------|
+| `.btn-primary` | Navy | Cream | Default | Primary actions — submit, confirm, Game Summary |
+| `.btn-secondary` | Cream | Navy | Default | Secondary actions — cancel, View Rounds, navigation |
+| `.btn-danger` | Red | Cream | None | Destructive actions — reset, remove, bust |
+
+### Size variants
+| Class | Padding | Font size | Use for |
+|-------|---------|-----------|---------|
+| (default) | 12px 16px | 14px | Gameplay buttons below card grid |
+| `.btn-lg` | 12px 24px | 16px | Modal buttons |
+| `.btn-sm` | 8px 16px | 14px (auto min-height) | Round nav Prev/Next |
+
+### Modifiers
+| Class | Effect |
+|-------|--------|
+| `.btn-full` | Forces `width: 100%` (already default on `.btn`, useful for overriding flex contexts) |
+
+### Composition
+Buttons are composed by combining base + intent + size:
+```
+class="btn btn-primary"              → standard primary
+class="btn btn-lg btn-secondary"     → large secondary (modal cancel)
+class="btn btn-sm btn-secondary"     → small secondary (Prev/Next)
+class="btn btn-lg btn-danger"        → large danger (modal remove/reset)
+```
+
+### Keyboard accessibility
+Action cards (Bank/Bust) have `role="button"` and `tabindex="0"` with Enter/Space keydown handlers.
+
+### Legacy classes
+The following classes are retained on elements alongside `.btn` for selector stability but contain minimal or no CSS:
+`nav-button`, `toggle-rounds-button`, `summary-button`, `reset-button`, `modal-button`, `modal-button primary`, `modal-button secondary`, `modal-button danger`
+
+These will be removed in a future cleanup pass once all selectors and tests reference `.btn-*` classes exclusively.
+
+---
+
+## Utility Classes
+
+| Class | Effect | Use for |
+|-------|--------|---------|
+| `.busted` | `color: var(--text-danger); text-decoration: line-through;` | Round score display when round was busted |
+| `.hidden` | `display: none` | Modal visibility toggle |
+
+---
+
+## Modal System
+
+Base class: `.modal-overlay` (renamed from `.celebration` — semantic improvement).
+Visibility toggled via `.hidden` class in JavaScript.
+All modals follow the pattern: `<div class="modal-overlay hidden" id="xxx-modal">`.
+
+### Known UX debt (backlog)
+- Inconsistent close/cancel pattern — some modals use bottom cancel, some have no explicit close
+- Button hierarchy not enforced — some multi-action modals lack a clear primary action
+- Three container layout classes still in use: `.modal-buttons`, `.modal-buttons-vertical`, `.reset-options-container`

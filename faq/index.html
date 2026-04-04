@@ -436,7 +436,7 @@
     </div>
 
     <!-- Share QR Code Modal -->
-    <div id="share-modal" class="celebration hidden">
+    <div id="share-modal" class="modal-overlay hidden">
       <div class="celebration-content">
         <div class="celebration-emoji">📱</div>
         <div class="celebration-text">Scan to share</div>
@@ -444,7 +444,7 @@
             <img src="../flip7-qr.png" alt="Flip 7 Scorecard QR code" style="width:200px;max-width:100%;height:auto;display:block;margin:0 auto;" />
           </div>
         <div class="modal-buttons">
-          <button onclick="closeShareModal()" class="modal-button primary">
+          <button onclick="closeShareModal()" class="btn btn-lg btn-primary modal-button primary">
             Close
           </button>
         </div>
@@ -567,7 +567,7 @@
         }
 
         // Close modal when clicking outside
-        const modals = document.querySelectorAll('.celebration');
+        const modals = document.querySelectorAll('.modal-overlay');
         modals.forEach(modal => {
           modal.addEventListener('click', function(e) {
             if (e.target === modal) {
