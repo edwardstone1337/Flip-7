@@ -187,8 +187,6 @@ Off-scale value: `1.3` (one-off on `.realtime-score`).
 | **B — Light tint** | bg→navy-light | `--bg-hover-light` | `.toggle-rounds-button:hover`, `.modal-button.secondary:hover`, `.nav-link:hover`, `.share-button:hover` |
 | **C — Danger** | bg→red-dark | `--bg-action-danger-hover` | `.reset-button:hover`, `.modal-button.danger:hover`, `.reset-option.danger:hover`, `.card.action.bust:hover` |
 | **D — Lift only** | translateY(-2px) + shadow | `--shadow-hover` | `.card:hover`, `.player-chip:hover`, `.reset-option:hover` |
-| **E — Accent** | bg→orange-light | `--bg-accent-light`, `--shadow-accent-hover` | `.winner-continue-button:hover` |
-
 ### Known gaps (to address in UX polish)
 - `.card.action.primary:hover` (Bank) — hover bg identical to resting state, no visual feedback
 - `.nav-button:hover` (Prev/Next) — no hover rule exists

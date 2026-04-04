@@ -84,3 +84,17 @@
 ### Added
 - 5 new Playwright tests: round navigation, game summary, share modal, overlay close, FAQ accordion
 - Test coverage now 19/19 across all critical user journeys
+
+### Changed
+- Game Summary button changed from primary to secondary
+- Leaderboard modal: cream backgrounds with borders replace navy fills
+- Winner name/score: navy text, drop shadows removed
+- New Game is now the primary CTA in leaderboard modal
+- Feedback link in leaderboard converted to secondary button (opens Hotjar survey)
+- Reset button and modal copy unified: "New Game" / "Start a new game?" throughout
+- Multi-player reset options: "New Game (keep players)" and "New Game (start fresh)"
+- FAQ feedback link colour fixed for accessibility (orange → navy)
+- Leaderboard active player uses navy border instead of orange
+
+### Fixed
+- Critical: New Game in leaderboard now closes leaderboard before opening reset modal

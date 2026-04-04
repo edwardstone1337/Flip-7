@@ -155,17 +155,17 @@ test('9. Player menu — multi-player shows menu options', async ({ page }) => {
 test('10. Reset modal — single player confirmation', async ({ page }) => {
   await playAndBankRound(page, [10, 11, 12]);
   await page.locator('.reset-button').click();
-  await expect(page.locator('#reset-modal-title')).toHaveText('Reset Game?', { timeout: 5000 });
-  await page.locator('#reset-modal-body').getByRole('button', { name: 'Reset Game' }).click();
+  await expect(page.locator('#reset-modal-title')).toHaveText('Start a new game?', { timeout: 5000 });
+  await page.locator('#reset-modal-body').getByRole('button', { name: 'New Game' }).click();
   await expect(page.locator('#banked-score')).toContainText('0');
 });
 
 test('11. Reset modal — multi-player options', async ({ page }) => {
   await addPlayer(page);
   await page.locator('.reset-button').click();
-  await expect(page.getByText('Reset Scores')).toBeVisible({ timeout: 5000 });
-  await expect(page.getByText('Start Fresh')).toBeVisible();
-  await page.locator('.reset-option').filter({ hasText: 'Reset Scores' }).click();
+  await expect(page.getByText('New Game (keep players)')).toBeVisible({ timeout: 5000 });
+  await expect(page.getByText('New Game (start fresh)')).toBeVisible();
+  await page.locator('.reset-option').filter({ hasText: 'New Game (keep players)' }).click();
   await expect(page.locator('#banked-score')).toContainText('0');
   await expect(page.locator('.player-chip')).toHaveCount(2);
 });
@@ -173,7 +173,7 @@ test('11. Reset modal — multi-player options', async ({ page }) => {
 test('12. Reset modal — Start Fresh removes players', async ({ page }) => {
   await addPlayer(page);
   await page.locator('.reset-button').click();
-  await page.locator('.reset-option').filter({ hasText: 'Start Fresh' }).click();
+  await page.locator('.reset-option').filter({ hasText: 'New Game (start fresh)' }).click();
   await expect(page.locator('.player-chip')).toHaveCount(1);
 });
 
@@ -197,7 +197,7 @@ test('14. 200 points celebration', async ({ page }) => {
   const leaderboard = page.locator('#leaderboard-modal:not(.hidden)');
   await expect(celebration.or(leaderboard)).toBeVisible({ timeout: 5000 });
   // Dismiss whichever modal is showing
-  await celebration.or(leaderboard).getByRole('button', { name: /Awesome!|Continue Playing/ }).click();
+  await celebration.or(leaderboard).getByRole('button', { name: /Awesome!|Close/ }).click();
   banked = await getBankedScore(page);
   expect(banked).toBe(204);
 });

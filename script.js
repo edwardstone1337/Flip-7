@@ -951,24 +951,24 @@
             const bodyEl = document.getElementById('reset-modal-body');
 
             if (isSinglePlayer) {
-                titleEl.textContent = 'Reset Game?';
+                titleEl.textContent = 'Start a new game?';
                 bodyEl.innerHTML = `
             <div class="reset-modal-description">This will clear all scores and rounds.</div>
             <div class="modal-buttons">
-                <button onclick="resetAllPlayersAndClose()" class="btn btn-lg btn-danger">Reset Game</button>
+                <button onclick="resetAllPlayersAndClose()" class="btn btn-lg btn-danger">New Game</button>
                 <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary">Cancel</button>
             </div>
         `;
             } else {
-                titleEl.textContent = 'Reset Game';
+                titleEl.textContent = 'Start a new game?';
                 bodyEl.innerHTML = `
             <div class="reset-options-container">
                 <div class="reset-option" onclick="resetAllPlayersAndClose()">
-                    <div class="reset-option-title">Reset Scores</div>
+                    <div class="reset-option-title">New Game (keep players)</div>
                     <div class="reset-option-desc">Clear all scores and rounds, keep all players</div>
                 </div>
                 <div class="reset-option danger" onclick="resetEntireGameAndClose()">
-                    <div class="reset-option-title">Start Fresh</div>
+                    <div class="reset-option-title">New Game (start fresh)</div>
                     <div class="reset-option-desc">Remove all players and start over</div>
                 </div>
             </div>

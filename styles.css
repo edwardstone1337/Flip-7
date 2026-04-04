@@ -980,7 +980,8 @@ body {
 
 /* Winner Announcement */
 .winner-announcement {
-  background: var(--bg-action-navy);
+  background: var(--bg-surface);
+  border: var(--border-default);
   border-radius: var(--radius-lg);
   padding: var(--space-7);
   margin: var(--space-5) 0;
@@ -1007,16 +1008,15 @@ body {
 .winner-name {
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
-  color: var(--text-accent);
+  color: var(--text-primary);
   font-family: var(--font-display);
   margin-bottom: var(--space-3);
   text-transform: uppercase;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .winner-score-label {
   font-size: var(--font-size-md);
-  color: var(--text-on-action);
+  color: var(--text-secondary);
   font-family: var(--font-body);
   margin-bottom: var(--space-2);
   opacity: 0.8;
@@ -1027,28 +1027,29 @@ body {
 .winner-score {
   font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);
-  color: var(--text-accent);
+  color: var(--text-primary);
   font-family: var(--font-display);
   line-height: var(--line-height-tight);
   margin-bottom: var(--space-4);
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .winner-message {
   font-size: var(--font-size-lg);
-  color: var(--text-on-action);
+  color: var(--text-primary);
   font-family: var(--font-body);
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-6);
 }
 
-/* Continue Playing Button inside Winner Announcement */
-.winner-continue-button {
-  background: var(--bg-accent);
-  color: var(--text-primary);
-  border: var(--border-accent);
-  margin: var(--space-3) auto 0;
-  max-width: 280px;
+/* Leaderboard Reset Button */
+#leaderboard-reset-btn {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+}
+
+#leaderboard-feedback-btn {
+  margin-bottom: var(--space-5);
+  text-decoration: none;
 }
 
 /* Leaderboard Styles */
@@ -1094,17 +1095,17 @@ body {
 }
 
 .leaderboard-item.active-player {
-  background: var(--bg-action-navy);
+  background: var(--bg-surface);
   border: var(--border-default);
 }
 
 .leaderboard-item.active-player .leaderboard-name,
 .leaderboard-item.active-player .leaderboard-rank {
-  color: var(--text-on-action);
+  color: var(--text-primary);
 }
 
 .leaderboard-item.active-player .leaderboard-score {
-  color: var(--text-accent);
+  color: var(--text-primary);
 }
 
 .leaderboard-rank {
@@ -1132,7 +1133,7 @@ body {
 .leaderboard-score {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
-  color: var(--text-action-primary);
+  color: var(--text-primary);
   font-family: var(--font-display);
 }
 
@@ -1518,7 +1519,7 @@ body {
 
 /* Feedback survey links */
 .feedback-link {
-  color: var(--text-accent-light);
+  color: var(--text-primary);
   text-decoration: underline;
   font-weight: var(--font-weight-semibold);
 }

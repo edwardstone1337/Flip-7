@@ -249,11 +249,11 @@
 
       <!-- Action Buttons -->
       <div class="action-buttons-container">
-        <button class="btn btn-primary summary-button" onclick="showLeaderboard()">
+        <button class="btn btn-secondary summary-button" onclick="showLeaderboard()">
           Game Summary
         </button>
         <button class="btn btn-danger reset-button" onclick="showResetConfirmation()">
-          Reset Game
+          New Game
         </button>
       </div>
 
@@ -411,10 +411,9 @@
             <div class="winner-score-label">scored</div>
             <div class="winner-score" id="winner-score"></div>
             <div class="winner-message">200 points reached! 🎯</div>
-            <button onclick="closeLeaderboard()" class="btn btn-lg winner-continue-button">
-              Continue Playing
-            </button>
           </div>
+          <button class="btn btn-lg btn-primary" id="leaderboard-reset-btn" onclick="closeLeaderboard(); showResetConfirmation()">New Game</button>
+          <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-secondary feedback-link" id="leaderboard-feedback-btn">Give us feedback</a>
           <div class="leaderboard-section-label hidden" id="leaderboard-section-label">
             Final Standings
           </div>
@@ -427,11 +426,8 @@
               <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=edthedesigner&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" class="celebration-coffee-img" />
             </a>
           </div>
-          <p class="modal-feedback-link">
-            <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
-          </p>
           <div class="modal-buttons">
-            <button onclick="closeLeaderboard()" class="btn btn-lg btn-primary">
+            <button onclick="closeLeaderboard()" class="btn btn-lg btn-secondary">
               Close
             </button>
           </div>
