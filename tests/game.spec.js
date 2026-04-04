@@ -201,3 +201,57 @@ test('14. 200 points celebration', async ({ page }) => {
   banked = await getBankedScore(page);
   expect(banked).toBe(204);
 });
+
+test('15. Round navigation — Prev and Next buttons move between rounds', async ({ page }) => {
+  await playAndBankRound(page, [3, 5, 7]);
+  await expect(page.locator('#round-indicator')).toHaveText('Round 2', { timeout: 5000 });
+
+  await page.locator('#prev-round').click();
+  await expect(page.locator('#round-indicator')).toHaveText('Round 1');
+
+  await page.locator('#next-round').click();
+  await expect(page.locator('#round-indicator')).toHaveText('Round 2');
+});
+
+test('16. Game Summary button opens leaderboard modal', async ({ page }) => {
+  await playAndBankRound(page, [3, 5]);
+  await page.locator('.summary-button').click();
+  await expect(page.locator('#leaderboard-modal')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('#leaderboard-modal .leaderboard-item')).toBeVisible();
+  await page.locator('#leaderboard-modal').getByRole('button', { name: /Close|Continue/i }).click();
+  await expect(page.locator('#leaderboard-modal')).toBeHidden({ timeout: 5000 });
+});
+
+test('17. Share modal opens and closes', async ({ page }) => {
+  await page.locator('.top-nav .share-button').click();
+  await expect(page.locator('#share-modal')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('#share-modal')).toContainText('Share');
+  await expect(page.locator('#share-modal').getByRole('button', { name: /Copy Link/i })).toBeVisible();
+  await page.locator('#share-modal').getByRole('button', { name: /Close/i }).click();
+  await expect(page.locator('#share-modal')).toBeHidden({ timeout: 5000 });
+});
+
+test('18. Clicking outside modal overlay closes it', async ({ page }) => {
+  await page.locator('.top-nav .share-button').click();
+  await expect(page.locator('#share-modal')).toBeVisible({ timeout: 5000 });
+  await page.click('#share-modal', { position: { x: 10, y: 10 } });
+  await expect(page.locator('#share-modal')).toBeHidden({ timeout: 5000 });
+});
+
+test('19. FAQ page — accordion opens and closes', async ({ page }) => {
+  await page.goto('/faq/');
+  await expect(page.locator('.accordion-header').first()).toBeVisible({ timeout: 5000 });
+
+  const firstContent = page.locator('#faq1');
+  const firstHeader = page.locator('.accordion-header').first();
+
+  await expect(firstContent).not.toHaveClass(/active/);
+
+  await firstHeader.click();
+  await expect(firstContent).toHaveClass(/active/, { timeout: 5000 });
+  await expect(firstHeader).toHaveAttribute('aria-expanded', 'true');
+
+  await firstHeader.click();
+  await expect(firstContent).not.toHaveClass(/active/, { timeout: 5000 });
+  await expect(firstHeader).toHaveAttribute('aria-expanded', 'false');
+});

@@ -125,7 +125,7 @@
         >
           ← Prev
         </button>
-        <div class="round-indicator" id="round-indicator">ROUND 1</div>
+        <div class="round-indicator" id="round-indicator">Round 1</div>
         <button class="btn btn-secondary btn-sm nav-button" id="next-round" onclick="goToNextRound()">
           Next →
         </button>
@@ -225,7 +225,7 @@
 
       <!-- Toggle Rounds Button -->
       <div class="toggle-rounds-container">
-        <button class="btn btn-secondary toggle-rounds-button" id="toggle-rounds-btn" onclick="toggleRoundsSection()">
+        <button class="btn btn-secondary" id="toggle-rounds-btn" onclick="toggleRoundsSection()">
           View Rounds
         </button>
       </div>
@@ -281,7 +281,7 @@
             <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
           </p>
           <div class="modal-buttons">
-            <button onclick="closeCelebration()" class="btn btn-lg btn-primary modal-button primary">
+            <button onclick="closeCelebration()" class="btn btn-lg btn-primary">
               Awesome!
             </button>
           </div>
@@ -294,11 +294,11 @@
           <div class="celebration-emoji">⚠️</div>
           <div class="celebration-text" id="error-message"></div>
           <div class="modal-buttons">
-            <button onclick="closeError()" class="btn btn-lg btn-secondary modal-button secondary">
-              Cancel
-            </button>
-            <button id="error-action-button" onclick="bankAndCloseError()" class="btn btn-lg btn-primary modal-button primary">
+            <button id="error-action-button" onclick="bankAndCloseError()" class="btn btn-lg btn-primary">
               Bank it
+            </button>
+            <button onclick="closeError()" class="btn btn-lg btn-secondary">
+              Cancel
             </button>
           </div>
         </div>
@@ -313,10 +313,10 @@
             <img src="flip7-qr.png" alt="Flip 7 Scorecard QR code" style="width:200px;max-width:100%;height:auto;display:block;margin:0 auto;" />
           </div>
           <div class="modal-buttons">
-            <button onclick="copyLinkToClipboard()" class="btn btn-lg btn-primary modal-button primary">
+            <button onclick="copyLinkToClipboard()" class="btn btn-lg btn-primary">
               📋 Copy Link
             </button>
-            <button onclick="closeShareModal()" class="btn btn-lg btn-secondary modal-button secondary">
+            <button onclick="closeShareModal()" class="btn btn-lg btn-secondary">
               Close
             </button>
           </div>
@@ -340,19 +340,20 @@
         <div class="celebration-content">
           <div class="celebration-emoji">➕</div>
           <div class="celebration-text">Add New Player</div>
-          <input 
-            type="text" 
-            id="add-player-input" 
-            class="player-input" 
-            placeholder="Player name (optional)"
+          <label for="add-player-input" class="input-label">Player name</label>
+          <input
+            type="text"
+            id="add-player-input"
+            class="player-input"
+            placeholder="e.g. Alice"
             maxlength="20"
           />
           <div class="modal-buttons">
-            <button onclick="closeAddPlayerModal()" class="btn btn-lg btn-secondary modal-button secondary">
-              Cancel
-            </button>
-            <button onclick="confirmAddPlayer()" class="btn btn-lg btn-primary modal-button primary">
+            <button onclick="confirmAddPlayer()" class="btn btn-lg btn-primary">
               Add
+            </button>
+            <button onclick="closeAddPlayerModal()" class="btn btn-lg btn-secondary">
+              Cancel
             </button>
           </div>
         </div>
@@ -363,19 +364,20 @@
         <div class="celebration-content">
           <div class="celebration-emoji">✏️</div>
           <div class="celebration-text">Rename Player</div>
-          <input 
-            type="text" 
-            id="rename-player-input" 
-            class="player-input" 
-            placeholder="New player name"
+          <label for="rename-player-input" class="input-label">New name</label>
+          <input
+            type="text"
+            id="rename-player-input"
+            class="player-input"
+            placeholder="e.g. Alice"
             maxlength="20"
           />
           <div class="modal-buttons">
-            <button onclick="closeRenamePlayerModal()" class="btn btn-lg btn-secondary modal-button secondary">
-              Cancel
-            </button>
-            <button onclick="confirmRenamePlayer()" class="btn btn-lg btn-primary modal-button primary">
+            <button onclick="confirmRenamePlayer()" class="btn btn-lg btn-primary">
               Save
+            </button>
+            <button onclick="closeRenamePlayerModal()" class="btn btn-lg btn-secondary">
+              Cancel
             </button>
           </div>
         </div>
@@ -388,11 +390,11 @@
           <div class="celebration-text">Remove <span id="remove-player-name"></span>?</div>
           <div class="celebration-subtext">This will permanently delete their rounds and scores.</div>
           <div class="modal-buttons">
-            <button onclick="closeRemovePlayerModal()" class="btn btn-lg btn-secondary modal-button secondary">
-              Cancel
-            </button>
-            <button onclick="confirmRemovePlayer()" class="btn btn-lg btn-danger modal-button danger">
+            <button onclick="confirmRemovePlayer()" class="btn btn-lg btn-danger">
               Remove Player
+            </button>
+            <button onclick="closeRemovePlayerModal()" class="btn btn-lg btn-secondary">
+              Cancel
             </button>
           </div>
         </div>
@@ -409,7 +411,7 @@
             <div class="winner-score-label">scored</div>
             <div class="winner-score" id="winner-score"></div>
             <div class="winner-message">200 points reached! 🎯</div>
-            <button onclick="closeLeaderboard()" class="btn btn-lg modal-button winner-continue-button">
+            <button onclick="closeLeaderboard()" class="btn btn-lg winner-continue-button">
               Continue Playing
             </button>
           </div>
@@ -429,7 +431,7 @@
             <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="feedback-link">Give us feedback</a>
           </p>
           <div class="modal-buttons">
-            <button onclick="closeLeaderboard()" class="btn btn-lg btn-primary modal-button primary">
+            <button onclick="closeLeaderboard()" class="btn btn-lg btn-primary">
               Close
             </button>
           </div>

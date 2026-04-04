@@ -135,16 +135,19 @@
                 }
             });
 
-            // Add click-outside-to-dismiss for leaderboard modal
-            const leaderboardModal = document.getElementById('leaderboard-modal');
-            if (leaderboardModal) {
-                leaderboardModal.addEventListener('click', function(e) {
-                    // Close modal if clicking on the backdrop (not the content)
-                    if (e.target === leaderboardModal) {
-                        closeLeaderboard();
+            // Close any modal when clicking the overlay background
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        // Use dedicated close function for leaderboard to ensure confetti cleanup
+                        if (modal.id === 'leaderboard-modal') {
+                            closeLeaderboard();
+                        } else {
+                            modal.classList.add('hidden');
+                        }
                     }
                 });
-            }
+            });
 
             // Coffee link tracking
             document.querySelectorAll('a[href*="buymeacoffee.com/edthedesigner"]').forEach(function(link) {
@@ -372,17 +375,18 @@
                 emojiEl.textContent = '✏️';
                 titleEl.textContent = 'Rename Player';
                 bodyEl.innerHTML = `
+            <label for="inline-rename-input" class="input-label">Rename player</label>
             <input
                 type="text"
                 id="inline-rename-input"
                 class="player-input"
-                placeholder="New player name"
+                placeholder="e.g. Alice"
                 maxlength="20"
                 value="${player.name.replace(/"/g, '&quot;')}"
             />
             <div class="modal-buttons">
-                <button onclick="closePlayerMenu()" class="btn btn-lg btn-secondary modal-button secondary">Cancel</button>
-                <button onclick="confirmInlineRename()" class="btn btn-lg btn-primary modal-button primary">Save</button>
+                <button onclick="confirmInlineRename()" class="btn btn-lg btn-primary">Save</button>
+                <button onclick="closePlayerMenu()" class="btn btn-lg btn-secondary">Cancel</button>
             </div>
         `;
                 document.getElementById('player-menu-modal').classList.remove('hidden');
@@ -403,9 +407,9 @@
                 titleEl.textContent = player.name;
                 bodyEl.innerHTML = `
             <div class="modal-buttons-vertical">
-                <button onclick="showRenamePlayerModal()" class="btn btn-lg btn-primary modal-button primary">Rename Player</button>
-                <button onclick="showRemovePlayerConfirm()" class="btn btn-lg btn-danger modal-button danger">Remove Player</button>
-                <button onclick="closePlayerMenu()" class="btn btn-lg btn-secondary modal-button secondary">Cancel</button>
+                <button onclick="showRenamePlayerModal()" class="btn btn-lg btn-primary">Rename Player</button>
+                <button onclick="showRemovePlayerConfirm()" class="btn btn-lg btn-danger">Remove Player</button>
+                <button onclick="closePlayerMenu()" class="btn btn-lg btn-secondary">Cancel</button>
             </div>
         `;
                 document.getElementById('player-menu-modal').classList.remove('hidden');
@@ -951,8 +955,8 @@
                 bodyEl.innerHTML = `
             <div class="reset-modal-description">This will clear all scores and rounds.</div>
             <div class="modal-buttons">
-                <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary modal-button secondary">Cancel</button>
-                <button onclick="resetAllPlayersAndClose()" class="btn btn-lg btn-danger modal-button danger">Reset Game</button>
+                <button onclick="resetAllPlayersAndClose()" class="btn btn-lg btn-danger">Reset Game</button>
+                <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary">Cancel</button>
             </div>
         `;
             } else {
@@ -969,7 +973,7 @@
                 </div>
             </div>
             <div class="modal-buttons">
-                <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary btn-full modal-button secondary full-width">Cancel</button>
+                <button onclick="closeResetConfirmation()" class="btn btn-lg btn-secondary">Cancel</button>
             </div>
         `;
             }

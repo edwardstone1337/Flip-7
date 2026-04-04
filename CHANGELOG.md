@@ -72,3 +72,15 @@
 - Reset modal: Removed "Reset Active Player" option (redundant, no valid use case)
 - Player menu: Removed "Reset This Player" option (redundant with reset modal)
 - Dead code: Removed `resetActivePlayer()`, `resetAllPlayers()`, `resetEntireGame()`, `showResetPlayerConfirm()`, `confirmResetPlayer()`, `closeResetPlayerModal()` and associated HTML modal
+
+### Changed
+- Modal button order standardised: primary action → danger → cancel (6 modals reordered)
+- 37 legacy button class instances removed (modal-button variants, toggle-rounds-button)
+- Off-grid spacing snapped to tokens: 14px→16px, 6px→8px, 30px→32px
+- .modal-feedback-link font-size converted from 0.85rem to --font-size-sm token
+- FAQ accordion hover state removed (mobile-first consistency)
+- Playwright config: removed SPA mode flag for correct FAQ page routing
+
+### Added
+- 5 new Playwright tests: round navigation, game summary, share modal, overlay close, FAQ accordion
+- Test coverage now 19/19 across all critical user journeys

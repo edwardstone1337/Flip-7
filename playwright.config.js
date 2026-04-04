@@ -10,7 +10,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npx serve . -l 3847 -s',
+    command: 'npx serve . -l 3847',
     port: 3847,
     reuseExistingServer: !process.env.CI,
   },
