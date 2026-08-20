@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Fixed
+- Canonical host: canonical tags, JSON-LD `url`, `robots.txt` sitemap line, `sitemap.xml` locs, and the legacy `faq.html` stub all declared `www.flip7scorecard.com` while CNAME serves the apex. All five now use `https://flip7scorecard.com`
+- Share modal QR 404: markup referenced `flip7-qr.png`, deleted in an earlier release. Both JS lookups found the image via `img[src*="flip7-qr"]`, so the image now carries `id="share-qr-img"` and both lookups use it. QR still generates client-side as a data URI on both pages
+
+### Changed
+- FAQPage structured data expanded from 4 to 20 questions (all gameplay + provenance Q&As). Donation and feedback accordions excluded — Google's FAQPage guidance treats promotional/navigational entries as ineligible
+- `script.js` and the qrcode-generator CDN script now `defer` (were render-blocking in `<head>`). Safe because every consumer runs inside `DOMContentLoaded`, which deferred scripts precede
+
+### Removed
+- `flip7logo.png` (21KB) — referenced nowhere in markup, styles, or scripts
+
 ### Added
 - Three-layer design token architecture (131 CSS custom properties)
 - Primitive tokens: color, gray scale, spacing, border-radius, typography, shadows, motion
