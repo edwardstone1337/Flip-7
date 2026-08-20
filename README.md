@@ -30,7 +30,6 @@ Flip-7/
 ├── tests/
 │   └── game.spec.js        # Playwright E2E test suite
 ├── favicon.png
-├── flip7logo.png
 ├── robots.txt
 ├── sitemap.xml
 ├── CNAME                   # flip7scorecard.com (GitHub Pages)

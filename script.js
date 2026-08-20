@@ -183,7 +183,7 @@
             });
 
             // Dynamic QR code generation (run once at init)
-            var qrImg = document.querySelector('#share-modal img[src*="flip7-qr"]');
+            var qrImg = document.getElementById("share-qr-img");
             if (qrImg && typeof qrcode !== 'undefined') {
                 var qr = qrcode(0, 'M');
                 qr.addData('https://flip7scorecard.com?utm_source=share&utm_medium=qr_code');
