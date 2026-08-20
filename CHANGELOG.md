@@ -16,7 +16,7 @@
 
 ### Changed
 - FAQPage structured data expanded from 4 to 20 questions (all gameplay + provenance Q&As). Donation and feedback accordions excluded — Google's FAQPage guidance treats promotional/navigational entries as ineligible
-- `script.js` and the qrcode-generator CDN script now `defer` (were render-blocking in `<head>`). Safe because every consumer runs inside `DOMContentLoaded`, which deferred scripts precede
+- The qrcode-generator CDN script now `defer`s (was render-blocking in `<head>`). It is only needed when the share modal opens, so removing an external DNS+TLS+fetch from the critical path is a straight win. `script.js` deliberately still blocks: deferring it renders the card grid ~480ms sooner on slow 3G but leaves a measured 1,160ms window where cards are visible and taps do nothing. Silent failure mid-game is worse than a slightly later paint
 
 ### Removed
 - `flip7logo.png` (21KB) — referenced nowhere in markup, styles, or scripts
