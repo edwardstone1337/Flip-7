@@ -30,7 +30,11 @@ Flip-7/
 ├── tests/
 │   └── game.spec.js        # Playwright E2E test suite
 ├── favicon.png
-├── flip7logo.png
+├── manifest.json           # Installable web app metadata
+├── apple-touch-icon.png    # iOS home screen (180)
+├── icon-192.png            # Manifest icon
+├── icon-512.png            # Manifest icon
+├── icon-512-maskable.png   # Android adaptive (padded safe zone)
 ├── robots.txt
 ├── sitemap.xml
 ├── CNAME                   # flip7scorecard.com (GitHub Pages)
@@ -99,7 +103,9 @@ See `tests/game.spec.js` for the full suite. Each test starts with a clean `loca
 - **Bust:** “Bust” action ends the round with zero points for that round.
 - **Bank:** Bank current round’s score and advance to the next round.
 - **Round navigation:** Prev/Next and “View Rounds” list; jump to any round; total score across rounds.
-- **Game summary:** Leaderboard modal with standings; 200-point celebration and optional Buy Me a Coffee CTA.
+- **Game summary:** Leaderboard modal with standings; 200-point celebration and optional Buy Me a Coffee CTA. Ranking is by score, so players level on points share a place (1st, 1st, 3rd).
+- **Ties:** If two or more players are level when someone passes 200, the app shows a tie rather than a winner and prompts another round, per the official tiebreak rule.
+- **Installable:** Manifest + icons; adding to the home screen opens standalone. No service worker, so Chrome's install prompt does not fire — iOS "Add to Home Screen" is fully supported.
 - **Reset options:** Context-aware — single player sees a simple "New Game?" confirmation; multiple players see "New Game" (keep players, clear scores) and "Start Fresh" (remove all players).
 - **Share:** Modal with QR code and “Copy Link” (link only; no multiplayer sync).
 - **Feedback:** Hotjar survey link in footer, celebration modal, and leaderboard modal.
