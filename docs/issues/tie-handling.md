@@ -3,6 +3,7 @@
 **Type:** bug
 **Priority:** normal
 **Effort:** small
+**Status:** shipped — see CHANGELOG (Unreleased), e2e tests 20–22
 
 ---
 
@@ -39,9 +40,15 @@ Verified in Chromium, two players driven to exactly 207 each:
 - `script.js:861` `bankRound()` — `shouldCelebrate` currently checks only `newBankedTotal >= 200 && !player.celebrationShown`. Add a lookup for other players on the same total and pass that through to the announcement.
 - `script.js:1042` `showLeaderboard(winningPlayer)` — accepts one optional winner. Needs a tie branch that sets the title/copy differently; the existing `winner-announcement` block can be reused rather than adding new markup.
 
+## Outcome
+
+Shipped as described, with one addition found during QA that the original scoping missed: a player who celebrated crossing 200 *alone* had `celebrationShown` set, so when an opponent later drew level and the tie was then broken, the deciding round announced nothing. A tie now clears `celebrationShown` for every player involved, since a tie means nobody has won yet.
+
+Ranking uses standard competition ranking — two players level on top are both 🥇 and the next is 3rd (🥉, no silver).
+
 ## Risk / notes
 
 - **No new markup or CSS required** if the tie state reuses `#winner-announcement`. Keeps it clear of the design system's protected zones (number cards, modifiers, Bank, Bust, card grid).
-- `celebrationShown` is per player and already resets when a total drops back below 200, so re-celebration after a tie-breaking round works without changes.
-- Add an e2e case to `tests/game.spec.js`: seed two players level above 200, assert both rank markers are 🥇 and that the banner does not name a single winner. The suite currently has no multi-player scoring test at all.
+- ~~`celebrationShown` already resets below 200, so re-celebration after a tie-break works without changes.~~ **Wrong** — this assumption was disproved in QA. It only resets when a total falls *below* 200, which never happens in a tie-break. See Outcome above.
+- Done: e2e tests 20–22 in `tests/game.spec.js` cover the tie banner, the tie-break, and score-based ranking, using a `seedTotals()` helper rather than playing 200 points of real rounds per player.
 - **Out of scope, tracked separately:** the win banner fires the moment the *first* player passes 200, while opponents may not have played that round yet — so it can say "FINAL STANDINGS" mid-round. Fixing that properly needs a notion of "round complete for all players", which the app does not have (each player carries an independent `currentRound`). See `round-completion-model.md`.

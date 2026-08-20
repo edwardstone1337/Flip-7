@@ -860,9 +860,25 @@
 
             // Check for celebration (only when BANKING 200+)
             const shouldCelebrate = newBankedTotal >= 200 && !player.celebrationShown;
-            
+
+            // Anyone else level on points? Then this is a tie, not a win — the FAQ rule
+            // is to play additional rounds until one player leads outright.
+            const tiedWith = shouldCelebrate
+                ? gameState.players.filter(p =>
+                    p.id !== player.id && getPlayerTotal(p) === newBankedTotal)
+                : [];
+
             if (shouldCelebrate) {
-                player.celebrationShown = true;
+                // A tie means nobody has won yet, so it reopens the celebration for
+                // everyone level — including a player who already celebrated crossing
+                // 200 alone before the others caught up. Without this, the round that
+                // finally breaks the tie announces nothing.
+                if (tiedWith.length > 0) {
+                    player.celebrationShown = false;
+                    tiedWith.forEach(p => { p.celebrationShown = false; });
+                } else {
+                    player.celebrationShown = true;
+                }
             } else if (newBankedTotal < 200) {
                 // Reset celebration flag if score falls below 200 (allows re-celebration)
                 player.celebrationShown = false;
@@ -878,7 +894,7 @@
 
             // Show celebration AFTER updating displays and saving
             if (shouldCelebrate) {
-                showLeaderboard(player);
+                showLeaderboard(player, tiedWith);
             }
 
             // Auto-advance to next round only if this is a new round
@@ -1039,23 +1055,50 @@
             saveGameState();
         }
 
-        function showLeaderboard(winningPlayer = null) {
+        function showLeaderboard(winningPlayer = null, tiedWith = []) {
             updateLeaderboardDisplay();
-            
+
             // If there's a winning player, show celebration announcement
             if (winningPlayer) {
-                trackEvent('game_complete');
+                const isTie = tiedWith.length > 0;
+                trackEvent('game_complete', { tied: isTie, tied_players: tiedWith.length + 1 });
                 const total = getPlayerTotal(winningPlayer);
-                document.getElementById('leaderboard-emoji').textContent = '🎉';
-                document.getElementById('leaderboard-title').textContent = 'Congratulations!';
-                document.getElementById('winner-name').textContent = winningPlayer.name;
+
+                if (isTie) {
+                    // Level on points: name everyone involved and point at the tiebreak rule.
+                    // Keep name order matching the standings list below the banner
+                    const tiedIds = new Set([winningPlayer.id, ...tiedWith.map(p => p.id)]);
+                    const names = gameState.players
+                        .filter(p => tiedIds.has(p.id))
+                        .map(p => p.name);
+                    const nameList = names.length === 2
+                        ? names.join(' and ')
+                        : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+                    document.getElementById('leaderboard-emoji').textContent = '🤝';
+                    document.getElementById('leaderboard-title').textContent = "It's a tie!";
+                    document.getElementById('winner-name').textContent = nameList;
+                    document.getElementById('winner-score-label').textContent = 'are tied on';
+                    document.getElementById('winner-message').textContent =
+                        'Play another round to decide it. 🎯';
+                    document.getElementById('leaderboard-section-label').textContent = 'Standings';
+                } else {
+                    document.getElementById('leaderboard-emoji').textContent = '🎉';
+                    document.getElementById('leaderboard-title').textContent = 'Congratulations!';
+                    document.getElementById('winner-name').textContent = winningPlayer.name;
+                    document.getElementById('winner-score-label').textContent = 'scored';
+                    document.getElementById('winner-message').textContent = '200 points reached! 🎯';
+                    document.getElementById('leaderboard-section-label').textContent = 'Final Standings';
+                }
+
                 document.getElementById('winner-score').textContent = total;
                 document.getElementById('winner-announcement').classList.remove('hidden');
                 document.getElementById('leaderboard-section-label').classList.remove('hidden');
                 document.getElementById('celebration-coffee').classList.remove('hidden');
-                
-                // Create confetti effect
-                createConfetti();
+
+                // Confetti celebrates an outright win only — a tie isn't over yet
+                if (!isTie) {
+                    createConfetti();
+                }
             } else {
                 // Just showing leaderboard (no winner)
                 document.getElementById('leaderboard-emoji').textContent = '🏆';
@@ -1111,13 +1154,21 @@
                 return getPlayerTotal(b) - getPlayerTotal(a);
             });
 
+            // Rank by score, not list position: players level on points share a rank
+            // (207, 207, 180 -> 1st, 1st, 3rd). Single-leader games are unaffected.
+            let prevTotal = null;
+            let prevRank = 0;
+
             leaderboardList.innerHTML = sortedPlayers.map((player, index) => {
                 const total = getPlayerTotal(player);
-                const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
-                
+                const rank = total === prevTotal ? prevRank : index + 1;
+                prevTotal = total;
+                prevRank = rank;
+                const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+
                 return `
                     <div class="leaderboard-item ${player.id === gameState.activePlayerId ? 'active-player' : ''}">
-                        <div class="leaderboard-rank">${rankEmoji || (index + 1) + '.'}</div>
+                        <div class="leaderboard-rank">${rankEmoji || rank + '.'}</div>
                         <div class="leaderboard-player">
                             <div class="leaderboard-name">${player.name}</div>
                         </div>

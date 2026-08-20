@@ -255,3 +255,88 @@ test('19. FAQ page — accordion opens and closes', async ({ page }) => {
   await expect(firstContent).not.toHaveClass(/active/, { timeout: 5000 });
   await expect(firstHeader).toHaveAttribute('aria-expanded', 'false');
 });
+
+// --- Tie handling -----------------------------------------------------------
+// These seed banked totals directly rather than playing ~200 points of real
+// rounds for each player. Reaching a tie through gameplay alone would take
+// dozens of card taps per test.
+async function seedTotals(page, names, totals) {
+  for (let i = 1; i < names.length; i++) {
+    await page.locator('.add-player-chip').click();
+    await page.waitForSelector('#add-player-input', { state: 'visible', timeout: 5000 });
+    await page.locator('#add-player-input').fill(names[i]);
+    await page.locator('#add-player-input').press('Enter');
+    await page.waitForTimeout(300);
+  }
+  await page.evaluate((t) => {
+    gameState.players.forEach((p, i) => {
+      p.rounds = [
+        { round: 1, cards: ['12'], selectedCards: ['number-12'], score: t[i], flip7: false, busted: false, saved: true },
+        { round: 2, cards: [], selectedCards: [], score: 0, flip7: false, busted: false, saved: false },
+      ];
+      p.currentRound = 2;
+      p.celebrationShown = false;
+    });
+    gameState.activePlayerId = gameState.players[0].id;
+    localStorage.setItem('flip7GameState', JSON.stringify(gameState));
+  }, totals);
+  await page.reload();
+  await page.waitForSelector('.card.number');
+}
+
+async function usePlayer(page, index) {
+  await page.locator('.player-chip').nth(index).click();
+  await page.waitForTimeout(300);
+}
+
+test('20. Tie — players level on points share first place', async ({ page }) => {
+  await seedTotals(page, ['Player 1', 'Player 2'], [195, 195]);
+
+  await playAndBankRound(page, [12]);                 // Player 1 -> 207, alone
+  await expect(page.locator('#leaderboard-modal:not(.hidden)')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('#leaderboard-title')).toHaveText('Congratulations!');
+  await page.locator('#leaderboard-modal').getByRole('button', { name: 'Close' }).click();
+
+  await usePlayer(page, 1);
+  await playAndBankRound(page, [12]);                 // Player 2 -> 207, now level
+
+  await expect(page.locator('#leaderboard-modal:not(.hidden)')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('#leaderboard-title')).toHaveText("It's a tie!");
+  await expect(page.locator('#winner-score-label')).toHaveText('are tied on');
+  await expect(page.locator('#winner-score')).toHaveText('207');
+  await expect(page.locator('#leaderboard-section-label')).toHaveText('Standings');
+
+  const ranks = await page.locator('.leaderboard-rank').allTextContents();
+  expect(ranks[0]).toBe('🥇');
+  expect(ranks[1]).toBe('🥇');
+});
+
+test('21. Tie broken — the deciding round announces a winner', async ({ page }) => {
+  await seedTotals(page, ['Player 1', 'Player 2'], [207, 207]);
+
+  await playAndBankRound(page, [10]);                 // Player 1 -> 217, pulls ahead
+  await expect(page.locator('#leaderboard-modal:not(.hidden)')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('#leaderboard-title')).toHaveText('Congratulations!');
+  await expect(page.locator('#winner-name')).toHaveText('Player 1');
+  await expect(page.locator('#leaderboard-section-label')).toHaveText('Final Standings');
+
+  const ranks = await page.locator('.leaderboard-rank').allTextContents();
+  expect(ranks[0]).toBe('🥇');
+  expect(ranks[1]).toBe('🥈');
+});
+
+test('22. Leaderboard ranks by score, not list order', async ({ page }) => {
+  await seedTotals(page, ['Player 1', 'Player 2', 'Player 3'], [195, 195, 50]);
+
+  await playAndBankRound(page, [12]);
+  await page.locator('#leaderboard-modal').getByRole('button', { name: 'Close' }).click();
+  await usePlayer(page, 1);
+  await playAndBankRound(page, [12]);                 // two on 207, one on 50
+
+  await expect(page.locator('#leaderboard-modal:not(.hidden)')).toBeVisible({ timeout: 5000 });
+  // Competition ranking: 1st, 1st, 3rd — no silver is awarded
+  const ranks = await page.locator('.leaderboard-rank').allTextContents();
+  expect(ranks[0]).toBe('🥇');
+  expect(ranks[1]).toBe('🥇');
+  expect(ranks[2]).toBe('🥉');
+});

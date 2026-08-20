@@ -18,7 +18,16 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script defer src="script.js"></script>
     <link rel="icon" type="image/png" href="favicon.png" />
-    
+
+    <!-- Installable web app: manifest drives Android/desktop, apple-touch-icon drives iOS -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1d9995" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Flip 7" />
+
     <!-- Hotjar Tracking Code for Flip 7 Scorecard -->
     <script>
         (function(h,o,t,j,a,r){
@@ -408,9 +417,9 @@
           <div class="celebration-text" id="leaderboard-title">Game Standings</div>
           <div class="winner-announcement hidden" id="winner-announcement">
             <div class="winner-name" id="winner-name"></div>
-            <div class="winner-score-label">scored</div>
+            <div class="winner-score-label" id="winner-score-label">scored</div>
             <div class="winner-score" id="winner-score"></div>
-            <div class="winner-message">200 points reached! 🎯</div>
+            <div class="winner-message" id="winner-message">200 points reached! 🎯</div>
           </div>
           <button class="btn btn-lg btn-primary" id="leaderboard-reset-btn" onclick="closeLeaderboard(); showResetConfirmation()">New Game</button>
           <a href="https://surveys.hotjar.com/7e86b1ac-d595-4a9c-a64a-1b2a88434f18" target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-secondary feedback-link" id="leaderboard-feedback-btn">Give us feedback</a>

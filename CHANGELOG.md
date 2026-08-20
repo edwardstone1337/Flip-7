@@ -2,7 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+- Installable web app: `manifest.json`, `apple-touch-icon`, `theme-color` and iOS home-screen meta on both pages. Adding to the home screen now uses the Flip 7 icon and opens standalone instead of showing a page screenshot in Safari chrome
+- App icons `icon-192.png`, `icon-512.png`, `icon-512-maskable.png`, `apple-touch-icon.png`. The maskable variant is padded to 78% so Android's circular crop can't clip the 7 (the full-bleed artwork overflowed the safe zone by 22%)
+- E2E tests 20–22 covering tie announcement, tie-break, and score-based ranking — the suite previously had no multi-player scoring test
+
 ### Fixed
+- Ties: the leaderboard ranked by list position, so two players level on 207 were shown as 🥇 and 🥈. Ranking is now by score, and players level share a place (1st, 1st, 3rd — no silver awarded)
+- Ties: crossing 200 announced "Congratulations" and "Final Standings" even when another player was level. A tie now shows a tie banner naming everyone involved and pointing at the FAQ rule to play another round; confetti is held back for an outright win
+- Ties: a player who celebrated crossing 200 alone could never trigger a second announcement, so the round that finally broke a tie declared nothing. A tie now resets `celebrationShown` for every player involved
 - Canonical host: canonical tags, JSON-LD `url`, `robots.txt` sitemap line, `sitemap.xml` locs, and the legacy `faq.html` stub all declared `www.flip7scorecard.com` while CNAME serves the apex. All five now use `https://flip7scorecard.com`
 - Share modal QR 404: markup referenced `flip7-qr.png`, deleted in an earlier release. Both JS lookups found the image via `img[src*="flip7-qr"]`, so the image now carries `id="share-qr-img"` and both lookups use it. QR still generates client-side as a data URI on both pages
 
